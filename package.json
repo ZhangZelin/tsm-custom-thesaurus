@@ -1,0 +1,26 @@
+{
+  "name": "a2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {},
+  "devDependencies": {
+	"babel-cli": "^6.26.0",
+	"babel-preset-react": "^6.24.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "react": "./node_modules/.bin/babel app.jsx > app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/csc309-18s/assignment-2-tsm.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/csc309-18s/assignment-2-tsm/issues"
+  },
+  "homepage": "https://github.com/csc309-18s/assignment-2-tsm#readme"
+}
