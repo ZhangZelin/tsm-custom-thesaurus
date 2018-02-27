@@ -75,7 +75,7 @@ class AddCThesaurus extends React.Component {
 	}
 	handleSubmit(event){
 		event.preventDefault();
-		alert('Added ' + this.state.value2 + 'as synonm for ' + this.state.value);
+		alert('Added: ' + this.state.value2 + '\nSynonm of: ' + this.state.value + '\nFunctionality not implemented');
 	}
   	render() {
 	    return (
