@@ -98,12 +98,13 @@ class AddCThesaurus extends React.Component {
 	    );
 	}
 }
-class Base extends React.Component{
+class BaseFunction extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {job: 1};
 		this.handleRgClick = this.handleRgClick.bind(this);
 		this.handleCClick = this.handleCClick.bind(this);
+		this.logout = props.logout.bind(this);
 
 	}
 	handleRgClick(){
@@ -128,6 +129,9 @@ class Base extends React.Component{
 		return(
 			
 			<div>
+				<button onClick={this.logout} >
+		      		logout
+	      		</button>
 				{page}
 		      	<button onClick={this.handleCClick} >
 		      		Custom Th.
@@ -141,8 +145,87 @@ class Base extends React.Component{
 	}
 
 }
+
+class Login extends React.Component{
+	constructor(props){
+		super(props);
+		this.state = {login: false, f2: props.f2};
+
+		this.login = props.login.bind(this);
+		this.handleChange = props.change1.bind(this);
+		this.handleChange2 = props.change2.bind(this);
+		this.getf1 = props.f1.bind(this);
+		this.getf2 = props.f2.bind(this);
+
+
+	}
+	render(){
+		return(
+			<div>
+			<form onSubmit={this.login}>
+	        	<label>
+	        		ID:
+	        		<input type="text" value={this.getf1()} onChange={this.handleChange}/>
+        		</label>
+        		<label>
+	        		PW:
+	        		<input type="text" value={this.getf2()} onChange={this.handleChange2}/>
+        		</label>
+        		<input type="submit" value="Submit" />
+	        </form>
+			</div>
+		);
+	}
+
+}
+
+class MainPage extends React.Component{
+	constructor(props){
+		super(props);
+		this.state = {login: false, f1: '', f2: ''};
+
+		this.login = this.login.bind(this);
+		this.handleChange = this.handleChange.bind(this);
+		this.handleChange2 = this.handleChange2.bind(this);
+
+	}
+	handleChange(event){
+		this.setState({f1: event.target.value});
+	}
+	handleChange2(event){
+		this.setState({f2: event.target.value});
+	}
+	login(){
+		this.setState({login: true});
+		console.log(this.state.f1, this.state.f2);
+	}
+	logout(){
+		this.setState({login: false});
+		console.log('logout');
+	}
+	getf1(){
+		return(this.state.f1);
+	}
+	getf2(){
+		return(this.state.f1);
+	}
+	render(){
+		let page = null;
+		if(!this.state.login){
+			page = <Login change1={this.handleChange} change2={this.handleChange2} login={this.login} f1={this.getf1} f2={this.getf2} />;
+		}
+		else{
+			page = <BaseFunction logout={this.logout} />;
+		}
+		return(
+			<div>
+			{page}
+			</div>
+		);
+	}
+}
 // This asks ReactDOM to add the component SimpleWidget
 // Note the JSX for specifiying a React component
 
-ReactDOM.render(<Base />, document.getElementById('root'));
+ReactDOM.render(<MainPage />, document.getElementById('root'));
 //ReactDOM.render(<Bottom />, document.getElementById('bottom'));
