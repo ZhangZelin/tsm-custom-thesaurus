@@ -1,4 +1,3 @@
-
 class BaseThesaurus extends React.Component {
 	constructor(props) {
 		super(props);
@@ -118,14 +117,24 @@ class WelcomePage extends React.Component {
 	}
 }
 
-class Base extends React.Component {
+class BaseFunction extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = { job: 0 };
 		this.handleHClick = this.handleHClick.bind(this);
 		this.handleRgClick = this.handleRgClick.bind(this);
 		this.handleCClick = this.handleCClick.bind(this);
-
+		this.logout = props.logout.bind(this);
+	}
+	logout() {
+		this.setState({ job: 3 });
+		var NAME = document.getElementById("home");
+		NAME.className="active";
+		var CUS = document.getElementById("cus");
+		CUS.classList.remove("active");
+		var THES = document.getElementById("thes");
+		THES.classList.remove("active");
+		console.log('Home');
 	}
 	handleHClick() {
 		this.setState({ job: 0 });
@@ -167,9 +176,12 @@ class Base extends React.Component {
 		else if (job == 1) {
 			page = <BaseThesaurus />;
 		}
-		else {
+		else if (job == 2){
 			page = <AddCThesaurus />;
 
+		}else{
+			//log out function here
+			page = <WelcomePage />;
 		}
 		return (
 			<div className="site-wrapper">
@@ -185,6 +197,7 @@ class Base extends React.Component {
 										<li id="home" className="active"><a href="#" onClick={this.handleHClick}>Home</a></li>
 										<li id="cus"><a href="#" onClick={this.handleCClick}>Edit Custom Thesaurus</a></li>
 										<li id="thes"><a href="#" onClick={this.handleRgClick}>Use Thesaurus</a></li>
+										<li id="thes"><a href="#" onClick={this.logout}>Logout</a></li>
 									</ul>
 								</nav>
 							</div>
@@ -212,8 +225,83 @@ class Base extends React.Component {
 	}
 
 }
+
+class Login extends React.Component{
+	constructor(props){
+		super(props);
+		this.state = {login: false, f2: props.f2};
+
+		this.login = props.login.bind(this);
+		this.handleChange = props.change1.bind(this);
+		this.handleChange2 = props.change2.bind(this);
+		this.getf1 = props.f1.bind(this);
+		this.getf2 = props.f2.bind(this);
+
+
+	}
+	render(){
+		return(
+			
+			<div class="wrapper">
+			<form class="form-signin" onSubmit={this.login}>
+	        	<h2 class="form-signin-heading">Please login</h2>
+	        		<input type="text"  class="form-control" name="username" placeholder="Email Address" required="" autofocus="" value={this.getf1()} onChange={this.handleChange}/>
+	        		<input type="password" class="form-control" name="password" placeholder="Password" required="" value={this.getf2()} onChange={this.handleChange2}/>
+        		<input class="btn btn-lg btn-primary btn-block" type="submit" value="Submit" />
+	        </form>
+			</div>
+		);
+	}
+
+}
+
+class MainPage extends React.Component{
+	constructor(props){
+		super(props);
+		this.state = {login: false, f1: '', f2: ''};
+
+		this.login = this.login.bind(this);
+		this.handleChange = this.handleChange.bind(this);
+		this.handleChange2 = this.handleChange2.bind(this);
+
+	}
+	handleChange(event){
+		this.setState({f1: event.target.value});
+	}
+	handleChange2(event){
+		this.setState({f2: event.target.value});
+	}
+	login(){
+		this.setState({login: true});
+		console.log(this.state.f1, this.state.f2);
+	}
+	logout(){
+		this.setState({login: false});
+		console.log('logout');
+	}
+	getf1(){
+		return(this.state.f1);
+	}
+	getf2(){
+		return(this.state.f1);
+	}
+	render(){
+		let page = null;
+		if(!this.state.login){
+			page = <Login change1={this.handleChange} change2={this.handleChange2} login={this.login} f1={this.getf1} f2={this.getf2} />;
+		}
+		else{
+			page = <BaseFunction logout={this.logout} />;
+		}
+		return(
+			<div>
+			{page}
+			</div>
+		);
+	}
+}
 // This asks ReactDOM to add the component SimpleWidget
 // Note the JSX for specifiying a React component
 
-ReactDOM.render(<Base />, document.getElementById('root'));
+ReactDOM.render(<MainPage />, document.getElementById('root'));
 //ReactDOM.render(<Bottom />, document.getElementById('bottom'));
