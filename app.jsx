@@ -108,10 +108,10 @@ class WelcomePage extends React.Component {
 		return (
 			<div>
 				<h1 className="cover-heading">Welcome to TSM Custom Thesaurus.</h1>
-							<p className="lead">TSM Custom Thesaurus is a personalized, customizable thesaurus that builds upon the thesaurus from the Oxford English Dictionary API.</p>
-							<p className="lead">
-								<a onClick={this.handleRgClick} className="btn btn-lg btn-default">How does it work?</a>
-							</p>
+				<p className="lead">TSM Custom Thesaurus is a personalized, customizable thesaurus that builds upon the thesaurus from the Oxford English Dictionary API.</p>
+				<p className="lead">
+					<a onClick={this.handleRgClick} className="btn btn-lg btn-default">How does it work?</a>
+				</p>
 			</div>
 		);
 	}
@@ -242,12 +242,12 @@ class Login extends React.Component{
 	render(){
 		return(
 			
-			<div class="wrapper">
-			<form class="form-signin" onSubmit={this.login}>
-	        	<h2 class="form-signin-heading">Please login</h2>
-	        		<input type="text"  class="form-control" name="username" placeholder="Email Address" required="" autofocus="" value={this.getf1()} onChange={this.handleChange}/>
-	        		<input type="password" class="form-control" name="password" placeholder="Password" required="" value={this.getf2()} onChange={this.handleChange2}/>
-        		<input class="btn btn-lg btn-primary btn-block" type="submit" value="Submit" />
+			<div className="wrapper">
+			<form className="form-signin" onSubmit={this.login}>
+	        	<h2 className="form-signin-heading">Please login</h2>
+        		<input type="text"  className="form-control" name="username" placeholder="Email Address" required="" autoFocus="" value={this.getf1()} onChange={this.handleChange}/>
+        		<input type="password" className="form-control" name="password" placeholder="Password" required="" value={this.getf2()} onChange={this.handleChange2}/>
+        		<input className="btn btn-lg btn-primary btn-block" type="submit" value="Submit" />
 	        </form>
 			</div>
 		);
