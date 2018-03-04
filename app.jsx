@@ -1,7 +1,7 @@
 class BaseThesaurus extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { value: '', source: 'sourceStandard' };
+		this.state = { value: '', source: 'sourceStandard', type: 'synonyms' };
 
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -14,29 +14,46 @@ class BaseThesaurus extends React.Component {
 		event.preventDefault();
 		//console.log("doc is " + document.getElementById('thesinput').value);
 		this.state.value = document.getElementById('thesinput').value;
+		var TYPE = document.getElementById("sel1").value.toLowerCase();
 		//console.log("state is " + this.state.value);						
 		if (this.state.source === "sourceStandard") {
 			//alert('synonms for: ' + this.state.value + '\nFunctionality not implemented');
 			var REG = document.getElementById("returnReg");
 			REG.innerHTML = "";
 			//REG.append('<li>An element</li>');
-			var url = 'https://wordsapiv1.p.mashape.com/words/' + this.state.value + '/synonyms'
+			var url = 'https://wordsapiv1.p.mashape.com/words/' + this.state.value + '/' + TYPE;
+			console.log(url);
 			$.ajax({
-				url : url,
+				url: url,
 				type: "GET",
-				headers : {
+				headers: {
 					"X-Mashape-Key": "eWPyp4Sb8PmshOFdZAJKFbiI20NOp1oLR32jsnYjBkLwt5qmJg",
 					"X-Mashape-Host": "wordsapiv1.p.mashape.com"
 				},
-				success: function(data) { 
-				   alert("success")
-					var arrayLength = data.synonyms.length;
+				success: function (data) {
+					alert("success")
+					//console.log(data)
+					//console.log(TYPE)
+					//console.log(data.antonyms)	
+					//console.log(data.antonyms.length)														
+					if (TYPE == "synonyms"){
+						//console.log("a")
+						var arrayLength = data.synonyms.length;	
+					}else{
+						//console.log("b")
+						var arrayLength = data.antonyms.length;	
+					}
 					for (var i = 0; i < arrayLength; i++) {
 						var li = document.createElement("li");
 						var lia = document.createElement("a");
-						lia.appendChild(document.createTextNode(data.synonyms[i]));
+						if (TYPE == "synonyms"){
+							lia.appendChild(document.createTextNode(data.synonyms[i]));
+							lia.value = data.synonyms[i];
+						}else{
+							lia.appendChild(document.createTextNode(data.antonyms[i]));
+							lia.value = data.antonyms[i];
+						}	
 						lia.setAttribute("href", "#"); // added line
-						lia.value = data.synonyms[i];
 						lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
 						li.appendChild(lia);
 						REG.appendChild(li);
@@ -45,13 +62,14 @@ class BaseThesaurus extends React.Component {
 						//this.handleChange;this.handleSubmit
 						//Do something
 					}
-				   	console.log(data)					
-					console.log(data.synonyms)
-					console.log(data.synonyms[0])},
+					console.log(data)
+					//console.log(data.TYPE)
+					//console.log(data.TYPE[0])
+				},
 			});
 		}
 		else {
-			alert('synonms for: ' + this.state.value + ' from custom thesaurus\n Functionality not implemented');
+			alert(TYPE + ' for: ' + this.state.value + ' from custom thesaurus\n Functionality not implemented');
 		}
 	}
 	handleSourceChange(event) {
@@ -67,20 +85,28 @@ class BaseThesaurus extends React.Component {
 		        		<input type="text" id="thesinput" className="form-control" value={this.state.value} onChange={this.handleChange} />
 					</label>
 					<div className="radio">
-						<label>
+						<label className="radio-inline">
 							<input type="radio" value="sourceStandard"
 								checked={this.state.source === "sourceStandard"}
 								onChange={this.handleSourceChange} />
 
 							Standard Thesaurus
 		        		</label>
-						<label>
+						<label className="radio-inline">
 							<input type="radio" value="sourceCustom"
 								checked={this.state.source === "sourceCustom"}
 								onChange={this.handleSourceChange} />
 							Custom Thesaurus
 		        		</label>
 					</div>
+					<label>
+					<div className="form-group">
+						<select className="form-control" id="sel1">
+							<option>Synonyms</option>
+							<option>Antonyms</option>
+						</select>
+					</div>
+					</label>
 					<input className="btn btn-primary" type="submit" value="Search" />
 				</form>
 
@@ -109,7 +135,7 @@ class AddCThesaurus extends React.Component {
 	}
 	handleSubmit(event) {
 		event.preventDefault();
-		alert('Added: ' + this.state.value2 + '\nSynonm of: ' + this.state.value + '\nFunctionality not implemented');
+		alert('Added: ' + this.state.value2 + '\nSynonym of: ' + this.state.value + '\nFunctionality not implemented');
 	}
 	render() {
 		return (
@@ -118,11 +144,11 @@ class AddCThesaurus extends React.Component {
 				<form onSubmit={this.handleSubmit}>
 					<label>
 						Word:
-	        		<input type="text" value={this.state.value} onChange={this.handleChange} />
+	        		<input type="text" className="form-control" value={this.state.value} onChange={this.handleChange} />
 					</label>
 					<label>
-						Synonm:
-	        		<input type="text" value={this.state.value2} onChange={this.handleChange2} />
+						Synonym:
+	        		<input type="text" className="form-control" value={this.state.value2} onChange={this.handleChange2} />
 					</label>
 					<input className="btn btn-primary" type="submit" value="Submit" />
 				</form>
@@ -141,10 +167,10 @@ class WelcomePage extends React.Component {
 		return (
 			<div>
 				<h1 className="cover-heading">Welcome to TSM Custom Thesaurus.</h1>
-							<p className="lead">TSM Custom Thesaurus is a personalized, customizable thesaurus that builds upon the thesaurus from the Oxford English Dictionary API.</p>
-							<p className="lead">
-								<a onClick={this.handleRgClick} className="btn btn-lg btn-default">How does it work?</a>
-							</p>
+				<p className="lead">TSM Custom Thesaurus is a personalized, customizable thesaurus that builds upon the thesaurus from WordsAPI.</p>
+				<p className="lead">
+					<a onClick={this.handleRgClick} className="btn btn-lg btn-default">How does it work?</a>
+				</p>
 			</div>
 		);
 	}
@@ -172,7 +198,7 @@ class BaseFunction extends React.Component {
 	handleHClick() {
 		this.setState({ job: 0 });
 		var NAME = document.getElementById("home");
-		NAME.className="active";
+		NAME.className = "active";
 		var CUS = document.getElementById("cus");
 		CUS.classList.remove("active");
 		var THES = document.getElementById("thes");
@@ -182,7 +208,7 @@ class BaseFunction extends React.Component {
 	handleRgClick() {
 		this.setState({ job: 1 });
 		var NAME = document.getElementById("thes");
-		NAME.className="active";
+		NAME.className = "active";
 		var HOME = document.getElementById("home");
 		HOME.classList.remove("active");
 		var CUS = document.getElementById("cus");
@@ -192,7 +218,7 @@ class BaseFunction extends React.Component {
 	handleCClick() {
 		this.setState({ job: 2 });
 		var NAME = document.getElementById("cus");
-		NAME.className="active";
+		NAME.className = "active";
 		var HOME = document.getElementById("home");
 		HOME.classList.remove("active");
 		var THES = document.getElementById("thes");
@@ -209,10 +235,10 @@ class BaseFunction extends React.Component {
 		else if (job == 1) {
 			page = <BaseThesaurus />;
 		}
-		else if (job == 2){
+		else if (job == 2) {
 			page = <AddCThesaurus />;
 
-		}else{
+		} else {
 			//log out function here
 			page = <Login />;
 		}
@@ -259,10 +285,10 @@ class BaseFunction extends React.Component {
 
 }
 
-class Login extends React.Component{
-	constructor(props){
+class Login extends React.Component {
+	constructor(props) {
 		super(props);
-		this.state = {login: false, f2: props.f2};
+		this.state = { login: false, f2: props.f2 };
 
 		this.login = props.login.bind(this);
 		this.handleChange = props.change1.bind(this);
@@ -272,64 +298,64 @@ class Login extends React.Component{
 
 
 	}
-	render(){
-		return(
-			
+	render() {
+		return (
+
 			<div className="wrapper">
-			<form className="form-signin" onSubmit={this.login}>
-	        	<h2 className="form-signin-heading">Please login</h2>
-	        		<input type="text"  className="form-control" name="username" placeholder="Email Address" required="" autoFocus="" value={this.getf1()} onChange={this.handleChange}/>
-	        		<input type="password" className="form-control" name="password" placeholder="Password" required="" value={this.getf2()} onChange={this.handleChange2}/>
-        		<input className="btn btn-lg btn-primary btn-block" type="submit" value="Submit" />
-	        </form>
+				<form className="form-signin" onSubmit={this.login}>
+					<h2 className="form-signin-heading">Please login</h2>
+					<input type="text" className="form-control" name="username" placeholder="Email Address" required="" autoFocus="" value={this.getf1()} onChange={this.handleChange} />
+					<input type="password" className="form-control" name="password" placeholder="Password" required="" value={this.getf2()} onChange={this.handleChange2} />
+					<input className="btn btn-lg btn-primary btn-block" type="submit" value="Submit" />
+				</form>
 			</div>
 		);
 	}
 
 }
 
-class MainPage extends React.Component{
-	constructor(props){
+class MainPage extends React.Component {
+	constructor(props) {
 		super(props);
-		this.state = {login: false, f1: '', f2: ''};
+		this.state = { login: false, f1: '', f2: '' };
 
 		this.login = this.login.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.handleChange2 = this.handleChange2.bind(this);
 
 	}
-	handleChange(event){
-		this.setState({f1: event.target.value});
+	handleChange(event) {
+		this.setState({ f1: event.target.value });
 	}
-	handleChange2(event){
-		this.setState({f2: event.target.value});
+	handleChange2(event) {
+		this.setState({ f2: event.target.value });
 	}
-	login(){
-		this.setState({login: true});
+	login() {
+		this.setState({ login: true });
 		console.log(this.state.f1, this.state.f2);
 	}
-	logout(){
-		this.setState({login: false});
+	logout() {
+		this.setState({ login: false });
 		console.log('logout');
 		window.location.reload();
 	}
-	getf1(){
-		return(this.state.f1);
+	getf1() {
+		return (this.state.f1);
 	}
-	getf2(){
-		return(this.state.f1);
+	getf2() {
+		return (this.state.f1);
 	}
-	render(){
+	render() {
 		let page = null;
-		if(!this.state.login){
+		if (!this.state.login) {
 			page = <Login change1={this.handleChange} change2={this.handleChange2} login={this.login} f1={this.getf1} f2={this.getf2} />;
 		}
-		else{
+		else {
 			page = <BaseFunction logout={this.logout} />;
 		}
-		return(
+		return (
 			<div>
-			{page}
+				{page}
 			</div>
 		);
 	}
