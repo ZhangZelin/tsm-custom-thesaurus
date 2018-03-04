@@ -16,8 +16,9 @@ class BaseThesaurus extends React.Component {
 			//alert('synonms for: ' + this.state.value + '\nFunctionality not implemented');
 			var REG = document.getElementById("returnReg");
 			//REG.append('<li>An element</li>');
+			var url = 'https://wordsapiv1.p.mashape.com/words/' + this.state.value + '/synonyms'
 			$.ajax({
-				url : 'https://wordsapiv1.p.mashape.com/words/lovely/synonyms',
+				url : url,
 				type: "GET",
 				headers : {
 					"X-Mashape-Key": "eWPyp4Sb8PmshOFdZAJKFbiI20NOp1oLR32jsnYjBkLwt5qmJg",
@@ -25,7 +26,9 @@ class BaseThesaurus extends React.Component {
 				},
 				success: function(data) { 
 				   alert("success")
-					console.log(data)},
+				   	console.log(data)					
+					console.log(data.synonyms)
+					console.log(data.synonyms[0])},
 			});
 		}
 		else {
@@ -42,7 +45,7 @@ class BaseThesaurus extends React.Component {
 				<form onSubmit={this.handleSubmit}>
 					<label>
 						Word:
-		        		<input type="text" value={this.state.value} onChange={this.handleChange} />
+		        		<input type="text" className="form-control" value={this.state.value} onChange={this.handleChange} />
 					</label>
 					<div className="radio">
 						<label>
