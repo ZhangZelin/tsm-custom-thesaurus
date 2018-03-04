@@ -12,9 +12,11 @@ class BaseThesaurus extends React.Component {
 	}
 	handleSubmit(event) {
 		event.preventDefault();
+		this.setState({ value: document.getElementById('thesinput').value});		
 		if (this.state.source === "sourceStandard") {
 			//alert('synonms for: ' + this.state.value + '\nFunctionality not implemented');
 			var REG = document.getElementById("returnReg");
+			REG.innerHTML = "";
 			//REG.append('<li>An element</li>');
 			var url = 'https://wordsapiv1.p.mashape.com/words/' + this.state.value + '/synonyms'
 			$.ajax({
@@ -26,6 +28,21 @@ class BaseThesaurus extends React.Component {
 				},
 				success: function(data) { 
 				   alert("success")
+					var arrayLength = data.synonyms.length;
+					for (var i = 0; i < arrayLength; i++) {
+						var li = document.createElement("li");
+						var lia = document.createElement("a");
+						lia.appendChild(document.createTextNode(data.synonyms[i]));
+						lia.setAttribute("href", "#"); // added line
+						lia.value = data.synonyms[i];
+						lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
+						li.appendChild(lia);
+						REG.appendChild(li);
+						//document.getElementById('thesinput').innerHTML = this.value;
+						//alert(myStringArray[i]);
+						//this.handleChange;this.handleSubmit
+						//Do something
+					}
 				   	console.log(data)					
 					console.log(data.synonyms)
 					console.log(data.synonyms[0])},
@@ -45,7 +62,7 @@ class BaseThesaurus extends React.Component {
 				<form onSubmit={this.handleSubmit}>
 					<label>
 						Word:
-		        		<input type="text" className="form-control" value={this.state.value} onChange={this.handleChange} />
+		        		<input type="text" id="thesinput" className="form-control" value={this.state.value} onChange={this.handleChange} />
 					</label>
 					<div className="radio">
 						<label>
@@ -65,7 +82,7 @@ class BaseThesaurus extends React.Component {
 					<input className="btn btn-primary" type="submit" value="Search" />
 				</form>
 
-				<ul id="returnReg" className="dicResList">
+				<ul id="returnReg" className="nav nav-pills">
 				</ul>
 			</div>
 		);
@@ -140,16 +157,16 @@ class BaseFunction extends React.Component {
 		this.handleCClick = this.handleCClick.bind(this);
 		this.logout = props.logout.bind(this);
 	}
-	logout() {
-		this.setState({ job: 3 });
-		var NAME = document.getElementById("home");
-		NAME.className="active";
-		var CUS = document.getElementById("cus");
-		CUS.classList.remove("active");
-		var THES = document.getElementById("thes");
-		THES.classList.remove("active");
-		console.log('Home');
-	}
+	// logout() {
+	// 	this.setState({ job: 3 });
+	// 	var NAME = document.getElementById("home");
+	// 	NAME.className="active";
+	// 	var CUS = document.getElementById("cus");
+	// 	CUS.classList.remove("active");
+	// 	var THES = document.getElementById("thes");
+	// 	THES.classList.remove("active");
+	// 	console.log('Home');
+	// }
 	handleHClick() {
 		this.setState({ job: 0 });
 		var NAME = document.getElementById("home");
@@ -195,7 +212,7 @@ class BaseFunction extends React.Component {
 
 		}else{
 			//log out function here
-			page = <WelcomePage />;
+			page = <Login />;
 		}
 		return (
 			<div className="site-wrapper">
@@ -292,6 +309,7 @@ class MainPage extends React.Component{
 	logout(){
 		this.setState({login: false});
 		console.log('logout');
+		window.location.reload();
 	}
 	getf1(){
 		return(this.state.f1);
