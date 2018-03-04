@@ -135,21 +135,44 @@ class AddCThesaurus extends React.Component {
 	}
 	handleSubmit(event) {
 		event.preventDefault();
-		alert('Added: ' + this.state.value2 + '\nSynonym of: ' + this.state.value + '\nFunctionality not implemented');
+		var TYPE = document.getElementById("sel2").value;		
+		var ACTION = document.getElementById("sel3").value;
+		alert(ACTION + ': ' + this.state.value2 + '\n' +TYPE +' of: ' + this.state.value + '\nFunctionality not implemented');
 	}
 	render() {
+		//var TYPE = document.getElementById("sel2").value;		
+		//var ACTION = document.getElementById("sel3").value;		
 		return (
 			<div className="bt">
-				<h3>Add to Custom Thesaurus</h3>
+				<h3>Edit Custom Thesaurus</h3>
 				<form onSubmit={this.handleSubmit}>
 					<label>
-						Word:
+						<label id="cuslab1">Word:</label>
 	        		<input type="text" className="form-control" value={this.state.value} onChange={this.handleChange} />
 					</label>
 					<label>
-						Synonym:
+						<label id="cuslab2">Synonym/Antonym:</label>
 	        		<input type="text" className="form-control" value={this.state.value2} onChange={this.handleChange2} />
 					</label>
+					<br/>
+					<label>
+					<div className="form-group">
+						<select className="form-control" id="sel2">
+							<option>Synonym</option>
+							<option>Antonym</option>
+						</select>
+					</div>
+					</label>
+					<label>
+					<div className="form-group">
+						<select className="form-control" id="sel3">
+							<option>Add</option>
+							<option>Remove</option>
+						</select>
+					</div>
+					</label>
+					<br/>
+					
 					<input className="btn btn-primary" type="submit" value="Submit" />
 				</form>
 				<ul className="dicResList">
