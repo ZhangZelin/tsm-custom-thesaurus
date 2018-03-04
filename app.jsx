@@ -12,7 +12,9 @@ class BaseThesaurus extends React.Component {
 	}
 	handleSubmit(event) {
 		event.preventDefault();
-		this.setState({ value: document.getElementById('thesinput').value});		
+		//console.log("doc is " + document.getElementById('thesinput').value);
+		this.state.value = document.getElementById('thesinput').value;
+		//console.log("state is " + this.state.value);						
 		if (this.state.source === "sourceStandard") {
 			//alert('synonms for: ' + this.state.value + '\nFunctionality not implemented');
 			var REG = document.getElementById("returnReg");
