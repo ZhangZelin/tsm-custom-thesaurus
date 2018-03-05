@@ -22,7 +22,7 @@ class BaseThesaurus extends React.Component {
 			REG.innerHTML = "";
 			//REG.append('<li>An element</li>');
 			var url = 'https://wordsapiv1.p.mashape.com/words/' + this.state.value + '/' + TYPE;
-			console.log(url);
+			//console.log(url);
 			$.ajax({
 				url: url,
 				type: "GET",
@@ -31,28 +31,31 @@ class BaseThesaurus extends React.Component {
 					"X-Mashape-Host": "wordsapiv1.p.mashape.com"
 				},
 				success: function (data) {
-					alert("success")
+					//alert("success")
 					//console.log(data)
 					//console.log(TYPE)
 					//console.log(data.antonyms)	
 					//console.log(data.antonyms.length)														
-					if (TYPE == "synonyms"){
+					if (TYPE == "synonyms") {
 						//console.log("a")
-						var arrayLength = data.synonyms.length;	
-					}else{
+						var arrayLength = data.synonyms.length;
+					} else {
 						//console.log("b")
-						var arrayLength = data.antonyms.length;	
+						var arrayLength = data.antonyms.length;
+					}
+					if (arrayLength == 0){
+						REG.append("There are no results for this search");
 					}
 					for (var i = 0; i < arrayLength; i++) {
 						var li = document.createElement("li");
 						var lia = document.createElement("a");
-						if (TYPE == "synonyms"){
+						if (TYPE == "synonyms") {
 							lia.appendChild(document.createTextNode(data.synonyms[i]));
 							lia.value = data.synonyms[i];
-						}else{
+						} else {
 							lia.appendChild(document.createTextNode(data.antonyms[i]));
 							lia.value = data.antonyms[i];
-						}	
+						}
 						lia.setAttribute("href", "#"); // added line
 						lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
 						li.appendChild(lia);
@@ -62,7 +65,7 @@ class BaseThesaurus extends React.Component {
 						//this.handleChange;this.handleSubmit
 						//Do something
 					}
-					console.log(data)
+					//console.log(data)
 					//console.log(data.TYPE)
 					//console.log(data.TYPE[0])
 				},
@@ -100,12 +103,12 @@ class BaseThesaurus extends React.Component {
 		        		</label>
 					</div>
 					<label>
-					<div className="form-group">
-						<select className="form-control" id="sel1">
-							<option>Synonyms</option>
-							<option>Antonyms</option>
-						</select>
-					</div>
+						<div className="form-group">
+							<select className="form-control" id="sel1">
+								<option>Synonyms</option>
+								<option>Antonyms</option>
+							</select>
+						</div>
 					</label>
 					<input className="btn btn-primary" type="submit" value="Search" />
 				</form>
@@ -135,9 +138,9 @@ class AddCThesaurus extends React.Component {
 	}
 	handleSubmit(event) {
 		event.preventDefault();
-		var TYPE = document.getElementById("sel2").value;		
+		var TYPE = document.getElementById("sel2").value;
 		var ACTION = document.getElementById("sel3").value;
-		alert(ACTION + ': ' + this.state.value2 + '\n' +TYPE +' of: ' + this.state.value + '\nFunctionality not implemented');
+		alert(ACTION + ': ' + this.state.value2 + '\n' + TYPE + ' of: ' + this.state.value + '\nFunctionality not implemented');
 	}
 	render() {
 		//var TYPE = document.getElementById("sel2").value;		
@@ -148,31 +151,31 @@ class AddCThesaurus extends React.Component {
 				<form onSubmit={this.handleSubmit}>
 					<label>
 						<label id="cuslab1">Word:</label>
-	        		<input type="text" className="form-control" value={this.state.value} onChange={this.handleChange} />
+						<input type="text" className="form-control" value={this.state.value} onChange={this.handleChange} />
 					</label>
 					<label>
 						<label id="cuslab2">Synonym/Antonym:</label>
-	        		<input type="text" className="form-control" value={this.state.value2} onChange={this.handleChange2} />
+						<input type="text" className="form-control" value={this.state.value2} onChange={this.handleChange2} />
 					</label>
-					<br/>
+					<br />
 					<label>
-					<div className="form-group">
-						<select className="form-control" id="sel2">
-							<option>Synonym</option>
-							<option>Antonym</option>
-						</select>
-					</div>
+						<div className="form-group">
+							<select className="form-control" id="sel2">
+								<option>Synonym</option>
+								<option>Antonym</option>
+							</select>
+						</div>
 					</label>
 					<label>
-					<div className="form-group">
-						<select className="form-control" id="sel3">
-							<option>Add</option>
-							<option>Remove</option>
-						</select>
-					</div>
+						<div className="form-group">
+							<select className="form-control" id="sel3">
+								<option>Add</option>
+								<option>Remove</option>
+							</select>
+						</div>
 					</label>
-					<br/>
-					
+					<br />
+
 					<input className="btn btn-primary" type="submit" value="Submit" />
 				</form>
 				<ul className="dicResList">
@@ -191,9 +194,38 @@ class WelcomePage extends React.Component {
 			<div>
 				<h1 className="cover-heading">Welcome to TSM Custom Thesaurus.</h1>
 				<p className="lead">TSM Custom Thesaurus is a personalized, customizable thesaurus that builds upon the thesaurus from WordsAPI.</p>
-				<p className="lead">
-					<a onClick={this.handleRgClick} className="btn btn-lg btn-default">How does it work?</a>
-				</p>
+				<div className="lead">
+					<a data-toggle="modal" data-target="#myModal" className="btn btn-lg btn-default">How does it work?</a>
+					<div className="modal fade" id="myModal" role="dialog">
+						<div className="modal-dialog">
+							<div className="modal-content" id="myModalin">
+								<script>document.getElementById("myModalin").style = 'background: #333;'</script>
+								<div className="modal-header">
+									<button type="button" className="close" data-dismiss="modal">&times;</button>
+									<h4 className="modal-title">How does it work?</h4>
+								</div>
+								<div className="modal-body">
+									<p>Use the navigation bar at the top right corner to navigate to different features of our web application.</p>
+
+
+									<p>The Edit Custom Thesaurus tab to allows users to add or remove their own synonyms or antonym for a word. -This functionality is currently not implemented due to lack of storage.</p>
+
+									<p>The Use Thesaurus tab allows the user to find synonyms and antonyms based on the thesaurus provided by wordAPI or their own custom thesaurus based on the radio buttons. Custom thesaurus function not implemented. Standard thesaurus lookup function is functional.
+										Simply input a word in the textbox, select from Standard or Custom Thesaurus to look up from and select Synonym or Antonym from the dropdown list and press search.
+									</p>
+
+									<p>The user may also press on one of the result and the content of the search box will be replaced by the result that the user clicked on.</p>
+
+									<p>Use logout button to return to the login page.</p>
+								</div>
+								<div className="modal-footer">
+									<button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
 			</div>
 		);
 	}
@@ -226,7 +258,7 @@ class BaseFunction extends React.Component {
 		CUS.classList.remove("active");
 		var THES = document.getElementById("thes");
 		THES.classList.remove("active");
-		console.log('Home');
+		//console.log('Home');
 	}
 	handleRgClick() {
 		this.setState({ job: 1 });
@@ -236,7 +268,7 @@ class BaseFunction extends React.Component {
 		HOME.classList.remove("active");
 		var CUS = document.getElementById("cus");
 		CUS.classList.remove("active");
-		console.log('Reg');
+		//console.log('Reg');
 	}
 	handleCClick() {
 		this.setState({ job: 2 });
@@ -246,7 +278,7 @@ class BaseFunction extends React.Component {
 		HOME.classList.remove("active");
 		var THES = document.getElementById("thes");
 		THES.classList.remove("active");
-		console.log('Cust');
+		//console.log('Cust');
 	}
 
 	render() {
@@ -313,6 +345,8 @@ class Login extends React.Component {
 		super(props);
 		this.state = { login: false, f2: props.f2 };
 
+		this.register = props.register.bind(this);
+
 		this.login = props.login.bind(this);
 		this.handleChange = props.change1.bind(this);
 		this.handleChange2 = props.change2.bind(this);
@@ -330,6 +364,36 @@ class Login extends React.Component {
 					<input type="text" className="form-control" name="username" placeholder="Email Address" required="" autoFocus="" value={this.getf1()} onChange={this.handleChange} />
 					<input type="password" className="form-control" name="password" placeholder="Password" required="" value={this.getf2()} onChange={this.handleChange2} />
 					<input className="btn btn-lg btn-primary btn-block" type="submit" value="Submit" />
+					<a onClick={this.register} className="btn btn-default">Register new account</a>
+				</form>
+			</div>
+		);
+	}
+
+}
+
+class Register extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = { register: false, f2: props.f2 };
+
+		this.registerfinish = props.registerfinish.bind(this);
+		this.handleChange = props.change1.bind(this);
+		this.handleChange2 = props.change2.bind(this);
+		this.getf1 = props.f1.bind(this);
+		this.getf2 = props.f2.bind(this);
+
+
+	}
+	render() {
+		return (
+
+			<div className="wrapper">
+				<form className="form-signin" onSubmit={this.registerfinish}>
+					<h2 className="form-signin-heading">Register a new account</h2>
+					<input type="text" className="form-control" name="username" placeholder="Email Address" required="" autoFocus="" value={this.getf1()} onChange={this.handleChange} />
+					<input type="password" className="form-control" name="password" placeholder="Password" required="" value={this.getf2()} onChange={this.handleChange2} />
+					<input className="btn btn-lg btn-primary btn-block" type="submit" value="Submit" />
 				</form>
 			</div>
 		);
@@ -340,9 +404,10 @@ class Login extends React.Component {
 class MainPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { login: false, f1: '', f2: '' };
+		this.state = { login: false, register: false, f1: '', f2: '' };
 
 		this.login = this.login.bind(this);
+		this.register = this.register.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.handleChange2 = this.handleChange2.bind(this);
 
@@ -357,9 +422,17 @@ class MainPage extends React.Component {
 		this.setState({ login: true });
 		console.log(this.state.f1, this.state.f2);
 	}
+	register() {
+		this.setState({ register: true });
+		console.log(this.state.f1, this.state.f2);
+	}
+	registerfinish() {
+		this.setState({ register: false });
+		//console.log(this.state.f1, this.state.f2);
+	}
 	logout() {
 		this.setState({ login: false });
-		console.log('logout');
+		//console.log('logout');
 		window.location.reload();
 	}
 	getf1() {
@@ -370,8 +443,11 @@ class MainPage extends React.Component {
 	}
 	render() {
 		let page = null;
-		if (!this.state.login) {
-			page = <Login change1={this.handleChange} change2={this.handleChange2} login={this.login} f1={this.getf1} f2={this.getf2} />;
+		if (this.state.register) {
+			page = <Register change1={this.handleChange} change2={this.handleChange2} registerfinish={this.registerfinish} f1={this.getf1} f2={this.getf2} />;
+		}
+		else if (!this.state.login) {
+			page = <Login change1={this.handleChange} change2={this.handleChange2} login={this.login} register={this.register} f1={this.getf1} f2={this.getf2} />;
 		}
 		else {
 			page = <BaseFunction logout={this.logout} />;

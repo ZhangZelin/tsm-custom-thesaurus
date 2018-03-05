@@ -1,10 +1,12 @@
 For assignment-2 we decided to switch from Oxford English Dictionary API to wordAPI. Both API is very similar in functionality and features so our project proposal from assignment-1 will be unchanged. The reason for our change is that we later realized that due to security issues, Oxford English Dictionary API will deny any client-side application requests.
 
-This is a forum post on the official Oxford English Dictionary API forum posted by an Administrator that details the issues that we faced: 
+This is a forum post on the official Oxford English Dictionary API forum posted by an Administrator of the Oxford English Dictionary API that details the issues that we faced: 
 
 https://forum.oxforddictionaries.com/api/discussion/18/error-message-no-access-control-allow-origin-or-i-can-t-get-my-client-side-request-to-work#latest
 
-The user logs in. -Currently not implemented and any username and password works due to lack of storage. Press submit to continue.
+The user logs in. -Currently not implemented and any username and password works due to lack of storage. Pressing submit when the input boxes are empty will also allow the user to continue to the home page. Press submit to continue.
+
+For the register page, you must enter something in the inputbox to continue and return to the login page. Pressing submit when the input boxes are empty will not return to the login page. Register is also currently not implemented.
 
 Use the navigation bar at the top right corner to navigate to different features of our web application. 
 
