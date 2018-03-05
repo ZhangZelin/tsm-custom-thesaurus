@@ -68,6 +68,9 @@ class BaseThesaurus extends React.Component {
 					//console.log(data)
 					//console.log(data.TYPE)
 					//console.log(data.TYPE[0])
+				}, error: function (xhr, ajaxOptions, thrownError) {
+					alert(xhr.status);
+					alert(thrownError);
 				}
 			});
 		} else {
