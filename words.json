@@ -1,0 +1,10 @@
+{
+	{
+		"word": "good",
+		"synonms": ["great", "positive"]
+	},
+	{
+		"word": "bad",
+		"synonms": ["negative"]
+	}
+}
