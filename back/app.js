@@ -5,12 +5,14 @@ const app = express();
 
 app.get('/words', words.findAll);
 
-app.get('/words/:word', words.findOne);
+app.get('/words/:user', words.findAll);
 
-app.post('/words', words.addOne);
+app.get('/words/:word/:user', words.findOne);
 
-app.put('/words/:word', words.update);
+app.post('/words/:user', words.addOne);
 
-app.delete('words/:word', words.delete);
+app.put('/words/:word/:user', words.update);
+
+app.delete('words/:word/:user', words.delete);
 
 

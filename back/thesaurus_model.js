@@ -5,6 +5,8 @@ const Schema = mongoose.Schema;
 
 const wordSchema = new Schema({
 
+	owner: {type: String,
+		required: true},
 	word: {	type: String,
 		required: true},
 	synonms: [String]
