@@ -18,10 +18,18 @@ exports.findOne = function findWord(req, res) {
 };
 
 exports.addOne = function addUser(req, res) {
-  
-  	const newUser = new User(req.body);
+	console.log(req.body);
+	  const newUser = new User();
+	  newUser.username = req.body.username;
+	  newUser.password = req.body.password;
+	  //newUser.
 	newUser.save((err) => {
-
+		if(err){
+			console.log(err);
+			return res.status(500).send();
+		}
+		console.log(newUser);
+		return res.status(200).send();
   	});
 };
 
@@ -37,8 +45,13 @@ exports.update = function updateUser(req, res) {
 };
 
 exports.delete = function deleteUser(req, res) {
-
-	User.findOneAndRemove({ username: req.params.username }, (err) => {
-
+	console.log(req.params);
+	User.findOneAndRemove({ username: req.params.user}, (err) => {
+		if(err){
+			console.log(err);
+			return res.status(500).send();
+		}
+		//console.log(newUser);
+		return res.status(200).send();
   	});
 };

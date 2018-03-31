@@ -5,14 +5,12 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
 
-	username: {type: String,
-		required: true},
-	password: {type: String,
-		required: true},
+	username: String,
+	password: String,
 
 
 
-},{collection: 'thesaurus'}
+},{collection: 'myusers'}
 
 );
 
@@ -26,4 +24,4 @@ const userSchema = new Schema({
 // Doc for Mongoose Models: http://mongoosejs.com/docs/models
 
 // Use the schema to create a model
-module.exports = mongoose.model('Word', userSchema);
+module.exports = mongoose.model('User', userSchema);

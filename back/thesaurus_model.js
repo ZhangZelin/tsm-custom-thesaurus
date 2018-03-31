@@ -4,12 +4,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const wordSchema = new Schema({
-
-	owner: {type: String,
-		required: true},
-	word: {	type: String,
-		required: true},
-	synonms: [String]
+	owner: {type: String},
+	word: {	type: String},
+	type: {type: String},
+	definition: [String]
 
 
 },{collection: 'thesaurus'}
