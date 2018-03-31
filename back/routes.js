@@ -6,10 +6,18 @@ const express = require('express');
 exports.findAll = function findWord(req, res){
 	let query = {};
 	if(req.params.user){
-		query.username = req.params.user;
+		query.owner = req.params.user;
 	}
+	console.log(query);
 	Thesaurus.find(query, (err, allWords) =>{
-	
+		if(err){
+			console.log(err);
+			return res.status(500).send();
+		}
+		//console.log(newUser);
+		//console.log(res);
+		//console.log(allWords);
+		return res.status(200).send(allWords);
 	}
 	);
 };
@@ -17,10 +25,16 @@ exports.findAll = function findWord(req, res){
 exports.findOne = function findWord(req, res) {
   	let query = {
   		word: req.params.word,
-  		username: req.params.user
+		  owner: req.params.user,
+		  type: req.params.type
   	};
 	Thesaurus.findOne(query, (err, word) => {
-
+		if(err){
+			console.log(err);
+			return res.status(500).send();
+		}
+		//console.log(newUser);
+		return res.status(200).send(word);
 	});
 };
 

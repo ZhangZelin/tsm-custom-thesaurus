@@ -16,7 +16,7 @@ app.get('/words', words.findAll);
 
 app.get('/words/:user', words.findAll);
 
-app.get('/words/:user/:word', words.findOne);
+app.get('/words/:user/:word/:type', words.findOne);
 
 app.post('/words/:user', words.addOne);
 
