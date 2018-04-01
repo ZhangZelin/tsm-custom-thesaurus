@@ -15,13 +15,13 @@ class BaseThesaurus extends React.Component {
 		//console.log("doc is " + document.getElementById('thesinput').value);
 		this.state.value = document.getElementById('thesinput').value;
 		var TYPE = document.getElementById("sel1").value.toLowerCase();
+		var url = 'https://wordsapiv1.p.mashape.com/words/' + this.state.value + '/' + TYPE;
 		//console.log("state is " + this.state.value);						
 		if (this.state.source === "sourceStandard") {
 			//alert('synonms for: ' + this.state.value + '\nFunctionality not implemented');
 			var REG = document.getElementById("returnReg");
 			REG.innerHTML = "";
 			//REG.append('<li>An element</li>');
-			var url = 'https://wordsapiv1.p.mashape.com/words/' + this.state.value + '/' + TYPE;
 			//console.log(url);
 			$.ajax({
 				url: url,
@@ -97,6 +97,7 @@ class BaseThesaurus extends React.Component {
 					$.ajax({
 						url: url,
 						type: "GET",
+						async: false,
 						headers: {
 							"X-Mashape-Key": "eWPyp4Sb8PmshOFdZAJKFbiI20NOp1oLR32jsnYjBkLwt5qmJg",
 							"X-Mashape-Host": "wordsapiv1.p.mashape.com"
@@ -233,10 +234,11 @@ class AddCThesaurus extends React.Component {
 			async: false,
 			success: function (data) {
 				console.log(data);
-				if (data == null) {
+				if (data.definition == null) {
 					$.ajax({
 						url: url,
 						type: "GET",
+						async: false,
 						headers: {
 							"X-Mashape-Key": "eWPyp4Sb8PmshOFdZAJKFbiI20NOp1oLR32jsnYjBkLwt5qmJg",
 							"X-Mashape-Host": "wordsapiv1.p.mashape.com"
