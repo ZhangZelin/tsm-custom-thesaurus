@@ -60,14 +60,7 @@ class BaseThesaurus extends React.Component {
 						lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
 						li.appendChild(lia);
 						REG.appendChild(li);
-						//document.getElementById('thesinput').innerHTML = this.value;
-						//alert(myStringArray[i]);
-						//this.handleChange;this.handleSubmit
-						//Do something
 					}
-					//console.log(data)
-					//console.log(data.TYPE)
-					//console.log(data.TYPE[0])
 				}, error: function (xhr, ajaxOptions, thrownError) {
 					alert(xhr.status);
 					alert(thrownError);
@@ -77,10 +70,13 @@ class BaseThesaurus extends React.Component {
 			var REG = document.getElementById("returnReg");
 			REG.innerHTML = "";
 			$.ajax({
+				//url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 				url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
+
 				type: "GET",
 				async: false,
 				success: function (data) {
+					console.log(data);
 					var arrayLength = data.definition.length;
 					if (arrayLength == 0) {
 						REG.append("There are no results for this search");
@@ -98,8 +94,42 @@ class BaseThesaurus extends React.Component {
 					console.log(data);
 				},
 				error: function (xhr, ajaxOptions, thrownError) {
-					alert(xhr.status);
-					alert(thrownError);
+					$.ajax({
+						url: url,
+						type: "GET",
+						headers: {
+							"X-Mashape-Key": "eWPyp4Sb8PmshOFdZAJKFbiI20NOp1oLR32jsnYjBkLwt5qmJg",
+							"X-Mashape-Host": "wordsapiv1.p.mashape.com"
+						},
+						success: function (data) {
+							if (TYPE == "synonyms") {
+								var arrayLength = data.synonyms.length;
+							} else {
+								var arrayLength = data.antonyms.length;
+							}
+							if (arrayLength == 0) {
+								REG.append("There are no results for this search");
+							}
+							for (var i = 0; i < arrayLength; i++) {
+								var li = document.createElement("li");
+								var lia = document.createElement("a");
+								if (TYPE == "synonyms") {
+									lia.appendChild(document.createTextNode(data.synonyms[i]));
+									lia.value = data.synonyms[i];
+								} else {
+									lia.appendChild(document.createTextNode(data.antonyms[i]));
+									lia.value = data.antonyms[i];
+								}
+								lia.setAttribute("href", "#"); // added line
+								lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
+								li.appendChild(lia);
+								REG.appendChild(li);
+							}
+						}, error: function (xhr, ajaxOptions, thrownError) {
+							alert(xhr.status);
+							alert(thrownError);
+						}
+					});
 				}
 			});
 			//alert(TYPE + ' for: ' + this.state.value + ' from custom thesaurus\n Functionality not implemented');
@@ -193,9 +223,130 @@ class AddCThesaurus extends React.Component {
 	}
 	handleSubmit(event) {
 		event.preventDefault();
-		var TYPE = document.getElementById("sel2").value;
+		var TYPE = document.getElementById("sel2").value.toLowerCase();
 		var ACTION = document.getElementById("sel3").value;
-		alert(ACTION + ': ' + this.state.value2 + '\n' + TYPE + ' of: ' + this.state.value + '\nFunctionality not implemented');
+		var newDefinition = [];
+		var url = 'https://wordsapiv1.p.mashape.com/words/' + this.state.value + '/' + TYPE;
+		$.ajax({
+			url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
+			type: "GET",
+			async: false,
+			success: function (data) {
+				console.log(data);
+				if (data == null) {
+					$.ajax({
+						url: url,
+						type: "GET",
+						headers: {
+							"X-Mashape-Key": "eWPyp4Sb8PmshOFdZAJKFbiI20NOp1oLR32jsnYjBkLwt5qmJg",
+							"X-Mashape-Host": "wordsapiv1.p.mashape.com"
+						},
+						success: function (data) {
+							if (TYPE == "synonyms") {
+								var arrayLength = data.synonyms.length;
+							} else {
+								var arrayLength = data.antonyms.length;
+							}
+							for (var i = 0; i < arrayLength; i++) {
+								if (TYPE == "synonyms") {
+									newDefinition.append(data.synonyms[i]);
+								} else {
+									newDefinition.append(data.antonyms[i]);
+								}
+							}
+							$.ajax({
+								url: 'https://tsm-custom-thesaurus.herokuapp.com/words',
+								type: "POST",
+								async: false,
+								data: {
+									"word": this.state.value,
+									"type": TYPE,
+									"definition": newDefinition
+								},
+								success: function (data) {
+									console.log("added new entry");
+								},
+								error: function (xhr, ajaxOptions, thrownError) {
+									alert(xhr.status);
+									alert(thrownError);
+								}
+							});
+						}, error: function (xhr, ajaxOptions, thrownError) {
+							alert(xhr.status);
+							alert(thrownError);
+						}
+					});
+				} else {
+					newDefinition = data.definition;
+				}
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				alert(xhr.status);
+				alert(thrownError);
+			}
+		});
+		var EXIST = false;
+		for (var i = 0; i < newDefinition.length; i++) {
+			if (newDefinition[i] == this.state.value2) {
+				EXIST = true;
+			}
+		}
+		if (ACTION == "Add") {
+			if (EXIST == true) {
+				alert("Definition already exists!");
+			} else {
+				$.ajax({
+					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
+					type: "PUT",
+					async: false,
+					data: {
+						"definition": newDefinition.append(this.state.value2)
+					},
+					success: function (data) {
+						console.log(data);
+					},
+					error: function (xhr, ajaxOptions, thrownError) {
+						alert(xhr.status);
+						alert(thrownError);
+					}
+				});
+			}
+		}
+		if (ACTION == "Remove") {
+			if (this.state.value2 == '') {
+				$.ajax({
+					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value,
+					type: "DELETE",
+					async: false,
+					success: function (data) {
+						console.log("Delete success!");
+					},
+					error: function (xhr, ajaxOptions, thrownError) {
+						alert(xhr.status);
+						alert(thrownError);
+					}
+				});
+			} else if (EXIST == false) {
+				alert("Definition doesn't exist!");
+			} else {
+				$.ajax({
+					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
+					type: "PUT",
+					async: false,
+					data: {
+						"definition": newDefinition.splice(newDefinition.indexOf(this.state.value2), 1)
+					},
+					success: function (data) {
+						console.log(data);
+					},
+					error: function (xhr, ajaxOptions, thrownError) {
+						alert(xhr.status);
+						alert(thrownError);
+					}
+				});
+			}
+		}
+		//alert(ACTION + ': ' + this.state.value2 + '\n' + TYPE + ' of: ' + this.state.value + '\nFunctionality not implemented');
 	}
 	render() {
 		//var TYPE = document.getElementById("sel2").value;		
@@ -244,12 +395,12 @@ class AddCThesaurus extends React.Component {
 							React.createElement(
 								'option',
 								null,
-								'Synonym'
+								'Synonyms'
 							),
 							React.createElement(
 								'option',
 								null,
-								'Antonym'
+								'Antonyms'
 							)
 						)
 					)
@@ -350,6 +501,11 @@ class WelcomePage extends React.Component {
 									'p',
 									null,
 									'The Edit Custom Thesaurus tab to allows users to add or remove their own synonyms or antonym for a word.'
+								),
+								React.createElement(
+									'p',
+									null,
+									'To remove the entire word from the custom thesaurus, type in the word and leave the Synonyms/Antonyms field blank.'
 								),
 								React.createElement(
 									'p',
