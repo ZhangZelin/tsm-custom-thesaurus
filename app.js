@@ -228,7 +228,7 @@ class AddCThesaurus extends React.Component {
 		event.preventDefault();
 		var TYPE = document.getElementById("sel2").value.toLowerCase();
 		var ACTION = document.getElementById("sel3").value;
-		var newDefinition = [];
+		var newDefinition = [String];
 		var url = 'https://wordsapiv1.p.mashape.com/words/' + this.state.value + '/' + TYPE;
 
 		$.ajax({
@@ -259,7 +259,9 @@ class AddCThesaurus extends React.Component {
 									newDefinition.push(data.antonyms[i]);
 								}
 							}
+							console.log(newDefinition);
 							var wordvar = data.word;
+							console.log(wordvar);
 							$.ajax({
 								url: 'https://tsm-custom-thesaurus.herokuapp.com/words',
 								type: "POST",
@@ -297,6 +299,7 @@ class AddCThesaurus extends React.Component {
 				EXIST = true;
 			}
 		}
+		console.log(EXIST);
 		if (ACTION == "Add") {
 			if (EXIST == true) {
 				alert("Definition already exists!");
@@ -306,7 +309,7 @@ class AddCThesaurus extends React.Component {
 					type: "PUT",
 					async: false,
 					data: {
-						"definition": newDefinition.append(this.state.value2)
+						"definition": newDefinition.push(this.state.value2)
 					},
 					success: function (data) {
 						console.log(data);
