@@ -209,8 +209,9 @@ class AddCThesaurus extends React.Component {
 		var TYPE = document.getElementById("sel2").value.toLowerCase();
 		var ACTION = document.getElementById("sel3").value;
 		var newDefinition = new Array();
+		var wordvar = "";
 		var url = 'https://wordsapiv1.p.mashape.com/words/' + this.state.value + '/' + TYPE;
-
+		
 		$.ajax({
 			url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 			type: "GET",
@@ -246,30 +247,30 @@ class AddCThesaurus extends React.Component {
 								}
 							}
 							console.log(newDefinition);
-							var wordvar = data.word;
+							wordvar = data.word;
 							console.log(wordvar);
 
-							$.ajax({
-								url: 'https://tsm-custom-thesaurus.herokuapp.com/words',
-								type: "POST",
-								async: false,
-								contentType: "application/json",
-								data: {
-									"word": data.word,
-									"type": TYPE,
-									"definition": ["a","b","c"]
-								},
-								success: function (data) {
-									console.log(data);
-									
-									console.log("added new entry");
-								}
-								, error: function (xhr, ajaxOptions, thrownError) {
-									alert(xhr.status);
-									alert(thrownError);
-								}
-							});
+							
 						}, error: function (xhr, ajaxOptions, thrownError) {
+							alert(xhr.status);
+							alert(thrownError);
+						}
+					});
+					$.ajax({
+						url: 'https://tsm-custom-thesaurus.herokuapp.com/words',
+						type: "POST",
+						async: false,
+						headers: {contentType: "application/json"},
+						data: {
+							"word": wordvar,
+							"type": TYPE,
+							"definition": ["a","b","c"]
+						},
+						success: function (data) {
+							console.log(data);
+							console.log("added new entry");
+						}
+						, error: function (xhr, ajaxOptions, thrownError) {
 							alert(xhr.status);
 							alert(thrownError);
 						}
