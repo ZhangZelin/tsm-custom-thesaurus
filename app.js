@@ -252,13 +252,18 @@ class AddCThesaurus extends React.Component {
 							} else {
 								var arrayLength = data.antonyms.length;
 							}
-							for (var i = 0; i < arrayLength; i++) {
-								if (TYPE == "synonyms") {
-									newDefinition.concat([data.synonyms[i]]);
-								} else {
-									newDefinition.concat([data.antonyms[i]]);
-								}
+							if (TYPE == "synonyms") {
+								newDefinition = data.synonyms;
+							} else {
+								newDefinition = data.antonyms;
 							}
+							// for (var i = 0; i < arrayLength; i++) {
+							// 	if (TYPE == "synonyms") {
+							// 		newDefinition.concat([data.synonyms[i]]);
+							// 	} else {
+							// 		newDefinition.concat([data.antonyms[i]]);
+							// 	}
+							// }
 							console.log(newDefinition);
 							var wordvar = data.word;
 							console.log(wordvar);
