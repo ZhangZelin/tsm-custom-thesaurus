@@ -208,6 +208,7 @@ class AddCThesaurus extends React.Component {
 		var ACTION = document.getElementById("sel3").value;
 		var newDefinition = [];
 		var url = 'https://wordsapiv1.p.mashape.com/words/' + this.state.value + '/' + TYPE;
+
 		$.ajax({
 			url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 			type: "GET",
@@ -236,12 +237,13 @@ class AddCThesaurus extends React.Component {
 									newDefinition.push(data.antonyms[i]);
 								}
 							}
+							var wordvar = data.word;
 							$.ajax({
 								url: 'https://tsm-custom-thesaurus.herokuapp.com/words',
 								type: "POST",
 								async: false,
 								data: {
-									"word": this.state.value,
+									"word": data.word,
 									"type": TYPE,
 									"definition": newDefinition
 								},
