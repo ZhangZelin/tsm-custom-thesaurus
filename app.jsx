@@ -78,7 +78,7 @@ class BaseThesaurus extends React.Component {
 			var REG = document.getElementById("returnReg");
 			REG.innerHTML = "";
 			$.ajax({
-				url: 'http://localhost:3000/words/' + this.state.value + '/' + TYPE,
+				url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 				type: "GET",
 				async: false,
 				success: function (data) {
@@ -309,7 +309,7 @@ class BaseFunction extends React.Component {
 		if (document.getElementById("newpass").value === document.getElementById("newpassconf").value){
 			//console.log(document.getElementById("newpassconf").value);
 		$.ajax({
-			url: 'http://localhost:3000/changepassword',
+			url: 'https://tsm-custom-thesaurus.herokuapp.com/changepassword',
 			type: "PUT",
 			async: false,
 			data: {password: document.getElementById("newpass").value},
@@ -331,7 +331,7 @@ class BaseFunction extends React.Component {
 	componentDidMount() {
 		var result = '';
 		$.ajax({
-			url: 'http://localhost:3000/welcome',
+			url: 'https://tsm-custom-thesaurus.herokuapp.com/welcome',
 			type: "GET",
 			async: false,
 			success: function (data) {
@@ -514,7 +514,7 @@ class MainPage extends React.Component {
 	login() {
 		var result = "";
 		$.ajax({
-			url: 'http://localhost:3000/login',
+			url: 'https://tsm-custom-thesaurus.herokuapp.com/login',
 			type: "POST",
 			async: false,
 			data: {
@@ -544,7 +544,7 @@ class MainPage extends React.Component {
 	registerfinish() {
 		this.setState({ register: false });
 		$.ajax({
-			url: 'http://localhost:3000/register',
+			url: 'https://tsm-custom-thesaurus.herokuapp.com/register',
 			type: "POST",
 			async: false,
 			data: {
@@ -569,7 +569,7 @@ class MainPage extends React.Component {
 	logout() {
 		this.setState({ login: false });
 		$.ajax({
-			url: 'http://localhost:3000/logout',
+			url: 'https://tsm-custom-thesaurus.herokuapp.com/logout',
 			type: "POST",
 			async: false,
 			success: function (data) {
