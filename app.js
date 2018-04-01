@@ -254,9 +254,9 @@ class AddCThesaurus extends React.Component {
 							}
 							for (var i = 0; i < arrayLength; i++) {
 								if (TYPE == "synonyms") {
-									newDefinition.push(data.synonyms[i]);
+									newDefinition.concat([data.synonyms[i]]);
 								} else {
-									newDefinition.push(data.antonyms[i]);
+									newDefinition.concat([data.antonyms[i]]);
 								}
 							}
 							console.log(newDefinition);
@@ -299,6 +299,7 @@ class AddCThesaurus extends React.Component {
 				EXIST = true;
 			}
 		}
+		console.log(newDefinition);
 		console.log(EXIST);
 		if (ACTION == "Add") {
 			if (EXIST == true) {
@@ -309,7 +310,7 @@ class AddCThesaurus extends React.Component {
 					type: "PUT",
 					async: false,
 					data: {
-						"definition": newDefinition.push(this.state.value2)
+						"definition": newDefinition.concat([this.state.value2])
 					},
 					success: function (data) {
 						console.log(data);
@@ -355,7 +356,7 @@ class AddCThesaurus extends React.Component {
 				});
 			}
 		}
-		//alert(ACTION + ': ' + this.state.value2 + '\n' + TYPE + ' of: ' + this.state.value + '\nFunctionality not implemented');
+		alert(ACTION + ': ' + this.state.value2 + '\n' + TYPE + ' of: ' + this.state.value + '\nFunctionality not implemented');
 	}
 	render() {
 		//var TYPE = document.getElementById("sel2").value;		
