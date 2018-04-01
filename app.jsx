@@ -296,7 +296,7 @@ class AddCThesaurus extends React.Component {
 			if (EXIST == true) {
 				alert("Definition already exists!")
 			} else {
-				newDefinition.concat([this.state.value2]);
+				
 				console.log(newDefinition);
 				console.log("{'definition:' " + newDefinition +"}");
 				//var obj = JSON.parse("{definition: " + newDefinition +"}");
@@ -306,7 +306,7 @@ class AddCThesaurus extends React.Component {
 					type: "PUT",
 					async: false,
 					headers: {contentType: "application/json"},
-					data: {"definition": newDefinition},
+					data: {"definition": newDefinition.concat([this.state.value2])},
 					success: function (data) {
 						console.log(data);
 					}
