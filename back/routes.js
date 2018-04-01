@@ -5,9 +5,13 @@ const express = require('express');
 
 exports.findAll = function findWord(req, res){
 	let query = {};
-	if(req.params.user){
-		query.owner = req.params.user;
+	//if(req.params.user){
+	//	query.owner = req.params.user;
+	//}
+	if(!req.session.user){
+		return res.status(401).send("Not logged in!");
 	}
+	query.owner = req.session.user.username;
 	console.log(query);
 	Thesaurus.find(query, (err, allWords) =>{
 		if(err){
@@ -23,9 +27,12 @@ exports.findAll = function findWord(req, res){
 };
 
 exports.findOne = function findWord(req, res) {
+	if(!req.session.user){
+		return res.status(401).send("Not logged in!");
+	}
   	let query = {
   		word: req.params.word,
-		  owner: req.params.user,
+		  owner: req.session.user.username,
 		  type: req.params.type
   	};
 	Thesaurus.findOne(query, (err, word) => {
@@ -39,12 +46,14 @@ exports.findOne = function findWord(req, res) {
 };
 
 exports.addOne = function addWord(req, res) {
-	
+	if(!req.session.user){
+		return res.status(401).send("Not logged in!");
+	}
 	//console.log(req.params.user);
 	//console.log(res);
 	//return res.status(200).send();
 	  const newWord = new Thesaurus();
-	  newWord.owner = req.params.user;
+	  newWord.owner = req.session.user.username;
 	  newWord.word = req.body.word;
 	  newWord.type = req.body.type;
 	  newWord.definition = req.body.definition;
@@ -60,22 +69,34 @@ exports.addOne = function addWord(req, res) {
 };
 
 exports.update = function updateWord(req, res) {
+	if(!req.session.user){
+		return res.status(401).send("Not logged in!");
+	}
 	let query = {
   		word: req.params.word,
-  		username: req.params.user
+		  owner: req.session.user.username,
+		  type: req.params.type
   	};
 	Thesaurus.findOne(query, (err, word) => {
-		word.synonms = req.body.synonms;
+		word.definition = req.body.definition;
 		word.save((err2) => {
-
+			if(err){
+				console.log(err);
+				return res.status(500).send();
+			}
+			//console.log(newWord);
+			return res.status(200).send();
 		});
 
 	});
 };
 
 exports.delete = function deleteWord(req, res) {
+	if(!req.session.user){
+		return res.status(401).send("Not logged in!");
+	}
 	let query = {
-		owner: req.params.user,
+		owner: req.session.user.username,
   		word: req.params.word
   	};
 	Thesaurus.remove(query,(err) =>{

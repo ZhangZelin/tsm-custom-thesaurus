@@ -3,6 +3,7 @@ const express = require('express');
 const words = require('./routes');
 const users = require('./user_routes');
 const User = require('./user_model');
+const session = require('express-session');
 //const router = require('./index');
 const app = express();
 var bodyParser = require('body-parser');
@@ -12,40 +13,33 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
+app.use(session({secret:"supersecretsessioncodethatyoushouldnotsee",resave:false,saveUninitialized:true}));
+
 app.get('/words', words.findAll);
 
-app.get('/words/:user', words.findAll);
+//app.get('/words/:user', words.findAll);
 
-app.get('/words/:user/:word/:type', words.findOne);
+app.get('/words/:word/:type', words.findOne);
 
-app.post('/words/:user', words.addOne);
+app.post('/words', words.addOne);
 
-app.put('/words/:user/:word', words.update);
+app.put('/words/:word/:type', words.update);
 
-app.delete('/words/:user/:word', words.delete);
+app.delete('/words/:word', words.delete);
 
 app.get('/users/:user', users.findOne);
 
 app.get('/users', users.findAll);
 
-app.post('/users', users.addOne);
-//app.post('/users', router.post);
-// function(req,res){
-// 	//var username = req.body.username;
-// 	//var password = req.body.password;
-// 	var newuser = new User();
-// 	//newuser.username = username;
-// 	//newuser.password = password;
-// 	newuser.save(function(err,savedUser){
-// 		if(err){
-// 			console.log("err");
-// 			return res.status(500).send();
-// 		}
-// 		return res.status(200).send();
-// 	})
-// })
+app.post('/register', users.addOne);
 
-app.put('/users/:user', users.update);
+app.post('/login', users.login);
+
+app.post('/logout', users.logout);
+
+app.get('/welcome', users.checksession);
+
+app.put('/changepassword', users.update);
 
 app.delete('/users/:user', users.delete);
 
