@@ -73,65 +73,69 @@ class BaseThesaurus extends React.Component {
 			$.ajax({
 				//url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 				url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
-				
+
 				type: "GET",
 				async: false,
 				success: function (data) {
 					console.log(data);
-					var arrayLength = data.definition.length;
-					if (arrayLength == 0) {
-						REG.append("There are no results for this search");
-					}
-					for (var i = 0; i < arrayLength; i++) {
-						var li = document.createElement("li");
-						var lia = document.createElement("a");
-						lia.appendChild(document.createTextNode(data.definition[i]));
-						lia.value = data.definition[i];
-						lia.setAttribute("href", "#"); // added line
-						lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
-						li.appendChild(lia);
-						REG.appendChild(li);
+					if (data.definiton == null) {
+						$.ajax({
+							url: url,
+							type: "GET",
+							async: false,
+							headers: {
+								"X-Mashape-Key": "eWPyp4Sb8PmshOFdZAJKFbiI20NOp1oLR32jsnYjBkLwt5qmJg",
+								"X-Mashape-Host": "wordsapiv1.p.mashape.com"
+							},
+							success: function (data) {
+								if (TYPE == "synonyms") {
+									var arrayLength = data.synonyms.length;
+								} else {
+									var arrayLength = data.antonyms.length;
+								}
+								if (arrayLength == 0) {
+									REG.append("There are no results for this search");
+								}
+								for (var i = 0; i < arrayLength; i++) {
+									var li = document.createElement("li");
+									var lia = document.createElement("a");
+									if (TYPE == "synonyms") {
+										lia.appendChild(document.createTextNode(data.synonyms[i]));
+										lia.value = data.synonyms[i];
+									} else {
+										lia.appendChild(document.createTextNode(data.antonyms[i]));
+										lia.value = data.antonyms[i];
+									}
+									lia.setAttribute("href", "#"); // added line
+									lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
+									li.appendChild(lia);
+									REG.appendChild(li);
+								}
+							}, error: function (xhr, ajaxOptions, thrownError) {
+								alert(xhr.status);
+								alert(thrownError);
+							}
+						});
+					} else {
+						var arrayLength = data.definition.length;
+						if (arrayLength == 0) {
+							REG.append("There are no results for this search");
+						}
+						for (var i = 0; i < arrayLength; i++) {
+							var li = document.createElement("li");
+							var lia = document.createElement("a");
+							lia.appendChild(document.createTextNode(data.definition[i]));
+							lia.value = data.definition[i];
+							lia.setAttribute("href", "#"); // added line
+							lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
+							li.appendChild(lia);
+							REG.appendChild(li);
+						}
 					}
 					console.log(data);
 				}
 				, error: function (xhr, ajaxOptions, thrownError) {
-					$.ajax({
-						url: url,
-						type: "GET",
-						async: false,				
-						headers: {
-							"X-Mashape-Key": "eWPyp4Sb8PmshOFdZAJKFbiI20NOp1oLR32jsnYjBkLwt5qmJg",
-							"X-Mashape-Host": "wordsapiv1.p.mashape.com"
-						},
-						success: function (data) {														
-							if (TYPE == "synonyms") {
-								var arrayLength = data.synonyms.length;
-							} else {
-								var arrayLength = data.antonyms.length;
-							}
-							if (arrayLength == 0) {
-								REG.append("There are no results for this search");
-							}
-							for (var i = 0; i < arrayLength; i++) {
-								var li = document.createElement("li");
-								var lia = document.createElement("a");
-								if (TYPE == "synonyms") {
-									lia.appendChild(document.createTextNode(data.synonyms[i]));
-									lia.value = data.synonyms[i];
-								} else {
-									lia.appendChild(document.createTextNode(data.antonyms[i]));
-									lia.value = data.antonyms[i];
-								}
-								lia.setAttribute("href", "#"); // added line
-								lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
-								li.appendChild(lia);
-								REG.appendChild(li);
-							}
-						}, error: function (xhr, ajaxOptions, thrownError) {
-							alert(xhr.status);
-							alert(thrownError);
-						}
-					});
+
 				}
 			});
 			//alert(TYPE + ' for: ' + this.state.value + ' from custom thesaurus\n Functionality not implemented');
@@ -203,23 +207,23 @@ class AddCThesaurus extends React.Component {
 		var TYPE = document.getElementById("sel2").value.toLowerCase();
 		var ACTION = document.getElementById("sel3").value;
 		var newDefinition = [];
-		var url = 'https://wordsapiv1.p.mashape.com/words/' + this.state.value + '/' + TYPE;		
+		var url = 'https://wordsapiv1.p.mashape.com/words/' + this.state.value + '/' + TYPE;
 		$.ajax({
 			url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 			type: "GET",
 			async: false,
 			success: function (data) {
 				console.log(data);
-				if (data.definition == null){
+				if (data.definition == null) {
 					$.ajax({
 						url: url,
 						type: "GET",
-						async: false,										
+						async: false,
 						headers: {
 							"X-Mashape-Key": "eWPyp4Sb8PmshOFdZAJKFbiI20NOp1oLR32jsnYjBkLwt5qmJg",
 							"X-Mashape-Host": "wordsapiv1.p.mashape.com"
 						},
-						success: function (data) {												
+						success: function (data) {
 							if (TYPE == "synonyms") {
 								var arrayLength = data.synonyms.length;
 							} else {
@@ -227,9 +231,9 @@ class AddCThesaurus extends React.Component {
 							}
 							for (var i = 0; i < arrayLength; i++) {
 								if (TYPE == "synonyms") {
-									newDefinition.append(data.synonyms[i]);
+									newDefinition.push(data.synonyms[i]);
 								} else {
-									newDefinition.append(data.antonyms[i]);
+									newDefinition.push(data.antonyms[i]);
 								}
 							}
 							$.ajax({
@@ -254,7 +258,7 @@ class AddCThesaurus extends React.Component {
 							alert(thrownError);
 						}
 					});
-				}else{
+				} else {
 					newDefinition = data.definition;
 				}
 			}
@@ -264,15 +268,15 @@ class AddCThesaurus extends React.Component {
 			}
 		});
 		var EXIST = false;
-		for(var i = 0; i < newDefinition.length; i++) {
-			if(newDefinition[i] == this.state.value2){
+		for (var i = 0; i < newDefinition.length; i++) {
+			if (newDefinition[i] == this.state.value2) {
 				EXIST = true;
 			}
 		}
-		if(ACTION == "Add"){
-			if(EXIST == true){
-				alert("Definition already exists!")				
-			}else{
+		if (ACTION == "Add") {
+			if (EXIST == true) {
+				alert("Definition already exists!")
+			} else {
 				$.ajax({
 					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 					type: "PUT",
@@ -290,8 +294,8 @@ class AddCThesaurus extends React.Component {
 				});
 			}
 		}
-		if(ACTION == "Remove"){
-			if(this.state.value2 == ''){
+		if (ACTION == "Remove") {
+			if (this.state.value2 == '') {
 				$.ajax({
 					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value,
 					type: "DELETE",
@@ -305,15 +309,15 @@ class AddCThesaurus extends React.Component {
 					}
 				});
 			}
-			else if(EXIST == false){
-				alert("Definition doesn't exist!")				
-			}else{
+			else if (EXIST == false) {
+				alert("Definition doesn't exist!")
+			} else {
 				$.ajax({
 					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 					type: "PUT",
 					async: false,
 					data: {
-						"definition": newDefinition.splice(newDefinition.indexOf(this.state.value2),1)
+						"definition": newDefinition.splice(newDefinition.indexOf(this.state.value2), 1)
 					},
 					success: function (data) {
 						console.log(data);
@@ -402,9 +406,9 @@ class WelcomePage extends React.Component {
 									</p>
 
 									<p>The user may also press on one of the result and the content of the search box will be replaced by the result that the user clicked on.</p>
-									
+
 									<p>To change password, click your username at the top left corner of the page after logging in.</p>
-									
+
 									<p>Use logout button to return to the login page.</p>
 								</div>
 								<div className="modal-footer">
@@ -460,27 +464,27 @@ class BaseFunction extends React.Component {
 		THES.classList.remove("active");
 		//console.log('Cust');
 	}
-	changePassword(){
+	changePassword() {
 		console.log(document.getElementById("newpass").value);
-		if (document.getElementById("newpass").value === document.getElementById("newpassconf").value){
+		if (document.getElementById("newpass").value === document.getElementById("newpassconf").value) {
 			//console.log(document.getElementById("newpassconf").value);
-		$.ajax({
-			url: 'https://tsm-custom-thesaurus.herokuapp.com/changepassword',
-			type: "PUT",
-			async: false,
-			data: {password: document.getElementById("newpass").value},
-			success: function (data) {
-				console.log(data);
-				alert("Password updated successfully!");
-			}
-			, error: function (xhr, ajaxOptions, thrownError) {
-				alert("Failed to change password!");
-				alert(xhr.status);
-				alert(thrownError);
-			}
-		});
-	}
-		else{
+			$.ajax({
+				url: 'https://tsm-custom-thesaurus.herokuapp.com/changepassword',
+				type: "PUT",
+				async: false,
+				data: { password: document.getElementById("newpass").value },
+				success: function (data) {
+					console.log(data);
+					alert("Password updated successfully!");
+				}
+				, error: function (xhr, ajaxOptions, thrownError) {
+					alert("Failed to change password!");
+					alert(xhr.status);
+					alert(thrownError);
+				}
+			});
+		}
+		else {
 			alert("Passwords don't match!");
 		}
 	}
@@ -557,7 +561,7 @@ class BaseFunction extends React.Component {
 							<div className="modal-body">
 								<form className="form-signin" onSubmit={this.changePassword}>
 									<h2 className="form-signin-heading">Type new password here</h2>
-									<input type="password" id="newpass" className="form-control" name="newpassword" placeholder="New Password" required="" autoFocus=""  />
+									<input type="password" id="newpass" className="form-control" name="newpassword" placeholder="New Password" required="" autoFocus="" />
 									<input type="password" id="newpassconf" className="form-control" name="confirmpassword" placeholder="Confirm New Password" required="" />
 									<input className="btn btn-lg btn-primary btn-block" type="button" onClick={this.changePassword} value="Submit" />
 								</form>

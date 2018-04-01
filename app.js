@@ -77,61 +77,63 @@ class BaseThesaurus extends React.Component {
 				async: false,
 				success: function (data) {
 					console.log(data);
-					var arrayLength = data.definition.length;
-					if (arrayLength == 0) {
-						REG.append("There are no results for this search");
-					}
-					for (var i = 0; i < arrayLength; i++) {
-						var li = document.createElement("li");
-						var lia = document.createElement("a");
-						lia.appendChild(document.createTextNode(data.definition[i]));
-						lia.value = data.definition[i];
-						lia.setAttribute("href", "#"); // added line
-						lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
-						li.appendChild(lia);
-						REG.appendChild(li);
+					if (data.definiton == null) {
+						$.ajax({
+							url: url,
+							type: "GET",
+							async: false,
+							headers: {
+								"X-Mashape-Key": "eWPyp4Sb8PmshOFdZAJKFbiI20NOp1oLR32jsnYjBkLwt5qmJg",
+								"X-Mashape-Host": "wordsapiv1.p.mashape.com"
+							},
+							success: function (data) {
+								if (TYPE == "synonyms") {
+									var arrayLength = data.synonyms.length;
+								} else {
+									var arrayLength = data.antonyms.length;
+								}
+								if (arrayLength == 0) {
+									REG.append("There are no results for this search");
+								}
+								for (var i = 0; i < arrayLength; i++) {
+									var li = document.createElement("li");
+									var lia = document.createElement("a");
+									if (TYPE == "synonyms") {
+										lia.appendChild(document.createTextNode(data.synonyms[i]));
+										lia.value = data.synonyms[i];
+									} else {
+										lia.appendChild(document.createTextNode(data.antonyms[i]));
+										lia.value = data.antonyms[i];
+									}
+									lia.setAttribute("href", "#"); // added line
+									lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
+									li.appendChild(lia);
+									REG.appendChild(li);
+								}
+							}, error: function (xhr, ajaxOptions, thrownError) {
+								alert(xhr.status);
+								alert(thrownError);
+							}
+						});
+					} else {
+						var arrayLength = data.definition.length;
+						if (arrayLength == 0) {
+							REG.append("There are no results for this search");
+						}
+						for (var i = 0; i < arrayLength; i++) {
+							var li = document.createElement("li");
+							var lia = document.createElement("a");
+							lia.appendChild(document.createTextNode(data.definition[i]));
+							lia.value = data.definition[i];
+							lia.setAttribute("href", "#"); // added line
+							lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
+							li.appendChild(lia);
+							REG.appendChild(li);
+						}
 					}
 					console.log(data);
 				},
-				error: function (xhr, ajaxOptions, thrownError) {
-					$.ajax({
-						url: url,
-						type: "GET",
-						async: false,
-						headers: {
-							"X-Mashape-Key": "eWPyp4Sb8PmshOFdZAJKFbiI20NOp1oLR32jsnYjBkLwt5qmJg",
-							"X-Mashape-Host": "wordsapiv1.p.mashape.com"
-						},
-						success: function (data) {
-							if (TYPE == "synonyms") {
-								var arrayLength = data.synonyms.length;
-							} else {
-								var arrayLength = data.antonyms.length;
-							}
-							if (arrayLength == 0) {
-								REG.append("There are no results for this search");
-							}
-							for (var i = 0; i < arrayLength; i++) {
-								var li = document.createElement("li");
-								var lia = document.createElement("a");
-								if (TYPE == "synonyms") {
-									lia.appendChild(document.createTextNode(data.synonyms[i]));
-									lia.value = data.synonyms[i];
-								} else {
-									lia.appendChild(document.createTextNode(data.antonyms[i]));
-									lia.value = data.antonyms[i];
-								}
-								lia.setAttribute("href", "#"); // added line
-								lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
-								li.appendChild(lia);
-								REG.appendChild(li);
-							}
-						}, error: function (xhr, ajaxOptions, thrownError) {
-							alert(xhr.status);
-							alert(thrownError);
-						}
-					});
-				}
+				error: function (xhr, ajaxOptions, thrownError) {}
 			});
 			//alert(TYPE + ' for: ' + this.state.value + ' from custom thesaurus\n Functionality not implemented');
 		}
@@ -251,9 +253,9 @@ class AddCThesaurus extends React.Component {
 							}
 							for (var i = 0; i < arrayLength; i++) {
 								if (TYPE == "synonyms") {
-									newDefinition.append(data.synonyms[i]);
+									newDefinition.push(data.synonyms[i]);
 								} else {
-									newDefinition.append(data.antonyms[i]);
+									newDefinition.push(data.antonyms[i]);
 								}
 							}
 							$.ajax({
