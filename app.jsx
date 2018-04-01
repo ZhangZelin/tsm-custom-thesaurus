@@ -43,7 +43,7 @@ class BaseThesaurus extends React.Component {
 						//console.log("b")
 						var arrayLength = data.antonyms.length;
 					}
-					if (arrayLength == 0){
+					if (arrayLength == 0) {
 						REG.append("There are no results for this search");
 					}
 					for (var i = 0; i < arrayLength; i++) {
@@ -68,14 +68,42 @@ class BaseThesaurus extends React.Component {
 					//console.log(data)
 					//console.log(data.TYPE)
 					//console.log(data.TYPE[0])
-				},error: function (xhr, ajaxOptions, thrownError) {
+				}, error: function (xhr, ajaxOptions, thrownError) {
 					alert(xhr.status);
 					alert(thrownError);
 				}
 			});
 		}
 		else {
-			alert(TYPE + ' for: ' + this.state.value + ' from custom thesaurus\n Functionality not implemented');
+			var REG = document.getElementById("returnReg");
+			REG.innerHTML = "";
+			$.ajax({
+				url: 'http://localhost:3000/words/' + this.state.value + '/' + TYPE,
+				type: "GET",
+				async: false,
+				success: function (data) {
+					var arrayLength = data.definition.length;
+					if (arrayLength == 0) {
+						REG.append("There are no results for this search");
+					}
+					for (var i = 0; i < arrayLength; i++) {
+						var li = document.createElement("li");
+						var lia = document.createElement("a");
+						lia.appendChild(document.createTextNode(data.definition[i]));
+						lia.value = data.definition[i];
+						lia.setAttribute("href", "#"); // added line
+						lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
+						li.appendChild(lia);
+						REG.appendChild(li);
+					}
+					console.log(data);
+				}
+				, error: function (xhr, ajaxOptions, thrownError) {
+					alert(xhr.status);
+					alert(thrownError);
+				}
+			});
+			//alert(TYPE + ' for: ' + this.state.value + ' from custom thesaurus\n Functionality not implemented');
 		}
 	}
 	handleSourceChange(event) {
@@ -211,14 +239,16 @@ class WelcomePage extends React.Component {
 									<p>Use the navigation bar at the top right corner to navigate to different features of our web application.</p>
 
 
-									<p>The Edit Custom Thesaurus tab to allows users to add or remove their own synonyms or antonym for a word. -This functionality is currently not implemented due to lack of storage.</p>
+									<p>The Edit Custom Thesaurus tab to allows users to add or remove their own synonyms or antonym for a word.</p>
 
-									<p>The Use Thesaurus tab allows the user to find synonyms and antonyms based on the thesaurus provided by wordAPI or their own custom thesaurus based on the radio buttons. Custom thesaurus function not implemented. Standard thesaurus lookup function is functional.
+									<p>The Use Thesaurus tab allows the user to find synonyms and antonyms based on the thesaurus provided by wordAPI or their own custom thesaurus based on the radio buttons.
 										Simply input a word in the textbox, select from Standard or Custom Thesaurus to look up from and select Synonym or Antonym from the dropdown list and press search.
 									</p>
 
 									<p>The user may also press on one of the result and the content of the search box will be replaced by the result that the user clicked on.</p>
-
+									
+									<p>To change password, click your username at the top left corner of the page after logging in.</p>
+									
 									<p>Use logout button to return to the login page.</p>
 								</div>
 								<div className="modal-footer">
@@ -242,17 +272,8 @@ class BaseFunction extends React.Component {
 		this.handleRgClick = this.handleRgClick.bind(this);
 		this.handleCClick = this.handleCClick.bind(this);
 		this.logout = props.logout.bind(this);
+		this.changePassword = this.changePassword.bind(this);
 	}
-	// logout() {
-	// 	this.setState({ job: 3 });
-	// 	var NAME = document.getElementById("home");
-	// 	NAME.className="active";
-	// 	var CUS = document.getElementById("cus");
-	// 	CUS.classList.remove("active");
-	// 	var THES = document.getElementById("thes");
-	// 	THES.classList.remove("active");
-	// 	console.log('Home');
-	// }
 	handleHClick() {
 		this.setState({ job: 0 });
 		var NAME = document.getElementById("home");
@@ -283,7 +304,48 @@ class BaseFunction extends React.Component {
 		THES.classList.remove("active");
 		//console.log('Cust');
 	}
-
+	changePassword(){
+		console.log(document.getElementById("newpass").value);
+		if (document.getElementById("newpass").value === document.getElementById("newpassconf").value){
+			//console.log(document.getElementById("newpassconf").value);
+		$.ajax({
+			url: 'http://localhost:3000/changepassword',
+			type: "PUT",
+			async: false,
+			data: {password: document.getElementById("newpass").value},
+			success: function (data) {
+				console.log(data);
+				alert("Password updated successfully!");
+			}
+			, error: function (xhr, ajaxOptions, thrownError) {
+				alert("Failed to change password!");
+				alert(xhr.status);
+				alert(thrownError);
+			}
+		});
+	}
+		else{
+			alert("Passwords don't match!");
+		}
+	}
+	componentDidMount() {
+		var result = '';
+		$.ajax({
+			url: 'http://localhost:3000/welcome',
+			type: "GET",
+			async: false,
+			success: function (data) {
+				console.log(data);
+				result = data;
+			}
+			, error: function (xhr, ajaxOptions, thrownError) {
+				alert(xhr.status);
+				alert(thrownError);
+			}
+		});
+		console.log(result);
+		document.getElementById("username").innerHTML = "TSM Custom Thesaurus <br/> Logged in as: " + result;
+	}
 	render() {
 		const job = this.state.job;
 		let page = null;
@@ -308,7 +370,8 @@ class BaseFunction extends React.Component {
 
 						<div className="masthead clearfix">
 							<div className="container inner">
-								<h3 className="masthead-brand">TSM Custom Thesaurus</h3>
+								<h3 className="masthead-brand" ><a href="#" id="username" data-toggle="modal" data-target="#passChange">TSM Custom Thesaurus</a></h3>
+
 								<nav>
 									<ul className="nav masthead-nav">
 										<li id="home" className="active"><a href="#" onClick={this.handleHClick}>Home</a></li>
@@ -327,17 +390,30 @@ class BaseFunction extends React.Component {
 					</div>
 
 				</div>
+				<div className="modal fade" id="passChange" role="dialog">
+					<div className="modal-dialog">
+						<div className="modal-content" id="passChangein">
+							<script>document.getElementById("passChangein").style = 'background: #333;'</script>
+							<div className="modal-header">
+								<button type="button" className="close" data-dismiss="modal">&times;</button>
+								<h4 className="modal-title">Change Password</h4>
+							</div>
+							<div className="modal-body">
+								<form className="form-signin" onSubmit={this.changePassword}>
+									<h2 className="form-signin-heading">Type new password here</h2>
+									<input type="password" id="newpass" className="form-control" name="newpassword" placeholder="New Password" required="" autoFocus=""  />
+									<input type="password" id="newpassconf" className="form-control" name="confirmpassword" placeholder="Confirm New Password" required="" />
+									<input className="btn btn-lg btn-primary btn-block" type="button" onClick={this.changePassword} value="Submit" />
+								</form>
+							</div>
+							<div className="modal-footer">
+								<button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+							</div>
+						</div>
 
+					</div>
+				</div>
 			</div>
-			//<div>
-			//	{page}
-			// 	<button type class="btn btn-primary" onClick={this.handleCClick} >
-			//  		Edit Custom Thesaurus.
-			//	</button>
-			//	<button type class="btn btn-primary" onClick={this.handleRgClick} >
-			// 		Use Thesaurus.
-			//	</button>
-			//</div>
 		);
 	}
 
@@ -378,8 +454,8 @@ class Login extends React.Component {
 class Register extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { register: false, f1: '', f2: ''  };
-		
+		this.state = { register: false, f1: '', f2: '' };
+
 		this.registerfinish = props.registerfinish.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.handleChange2 = this.handleChange2.bind(this);
@@ -418,7 +494,7 @@ class MainPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = { login: false, register: false, f1: '', f2: '' };
-		
+
 		this.login = this.login.bind(this);
 		this.register = this.register.bind(this);
 		this.handleChange = this.handleChange.bind(this);
@@ -432,7 +508,7 @@ class MainPage extends React.Component {
 	handleChange2(event) {
 		this.setState({ f2: event.target.value });
 	}
-	loginsucc(){
+	loginsucc() {
 		this.setState({ login: true });
 	}
 	login() {
@@ -441,28 +517,25 @@ class MainPage extends React.Component {
 			url: 'http://localhost:3000/login',
 			type: "POST",
 			async: false,
-			data:{
+			data: {
 				"username": this.state.f1,
 				"password": this.state.f2
-			  },
+			},
 			success: function (data) {
-				//this.loginsucc;
 				console.log(data);
 				result = "true";
-				//console.log(result);
-				//render();
-				}
-			,error: function (xhr, ajaxOptions, thrownError) {
+			}
+			, error: function (xhr, ajaxOptions, thrownError) {
 				alert("Login Failed.");
 				alert(xhr.status);
 				alert(thrownError);
 			}
 		});
 		console.log(this.state.f1, this.state.f2);
-		if (result == "true"){
+		if (result == "true") {
 			this.setState({ login: true });
 		}
-		
+
 	}
 	register() {
 		this.setState({ register: true });
@@ -474,17 +547,17 @@ class MainPage extends React.Component {
 			url: 'http://localhost:3000/register',
 			type: "POST",
 			async: false,
-			data:{
+			data: {
 				"username": this.state.f1,
 				"password": this.state.f2
-			  },
+			},
 			success: function (data) {
-					console.log(data);
-					alert("Register Success!");
-					window.location.reload();
-					//this.setState({ login: true });
-				}
-			,error: function (xhr, ajaxOptions, thrownError) {
+				console.log(data);
+				alert("Register Success!");
+				window.location.reload();
+				//this.setState({ login: true });
+			}
+			, error: function (xhr, ajaxOptions, thrownError) {
 				//alert(body);
 				alert("Register Failed!");
 				alert(xhr.status);
@@ -498,24 +571,17 @@ class MainPage extends React.Component {
 		$.ajax({
 			url: 'http://localhost:3000/logout',
 			type: "POST",
-			// headers: {
-			// 	'accept': 'application/json',
-			// 	'accept-encoding': 'gzip, deflate',
-			// 	'accept-language': 'en-US,en;q=0.8',
-			// 	'content-type': 'application/json',
-			// 	'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
-			// },
+			async: false,
 			success: function (data) {
 				console.log(data);
 				window.location.reload();
-				}
-			,error: function (xhr, ajaxOptions, thrownError) {
+			}
+			, error: function (xhr, ajaxOptions, thrownError) {
 				alert(xhr.status);
 				alert(thrownError);
 			}
 		});
 		//console.log('logout');
-		
 	}
 	getf1() {
 		return (this.state.f1);

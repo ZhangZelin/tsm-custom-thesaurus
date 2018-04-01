@@ -74,7 +74,35 @@ class BaseThesaurus extends React.Component {
 				}
 			});
 		} else {
-			alert(TYPE + ' for: ' + this.state.value + ' from custom thesaurus\n Functionality not implemented');
+			var REG = document.getElementById("returnReg");
+			REG.innerHTML = "";
+			$.ajax({
+				url: 'http://localhost:3000/words/' + this.state.value + '/' + TYPE,
+				type: "GET",
+				async: false,
+				success: function (data) {
+					var arrayLength = data.definition.length;
+					if (arrayLength == 0) {
+						REG.append("There are no results for this search");
+					}
+					for (var i = 0; i < arrayLength; i++) {
+						var li = document.createElement("li");
+						var lia = document.createElement("a");
+						lia.appendChild(document.createTextNode(data.definition[i]));
+						lia.value = data.definition[i];
+						lia.setAttribute("href", "#"); // added line
+						lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
+						li.appendChild(lia);
+						REG.appendChild(li);
+					}
+					console.log(data);
+				},
+				error: function (xhr, ajaxOptions, thrownError) {
+					alert(xhr.status);
+					alert(thrownError);
+				}
+			});
+			//alert(TYPE + ' for: ' + this.state.value + ' from custom thesaurus\n Functionality not implemented');
 		}
 	}
 	handleSourceChange(event) {
@@ -321,17 +349,22 @@ class WelcomePage extends React.Component {
 								React.createElement(
 									'p',
 									null,
-									'The Edit Custom Thesaurus tab to allows users to add or remove their own synonyms or antonym for a word. -This functionality is currently not implemented due to lack of storage.'
+									'The Edit Custom Thesaurus tab to allows users to add or remove their own synonyms or antonym for a word.'
 								),
 								React.createElement(
 									'p',
 									null,
-									'The Use Thesaurus tab allows the user to find synonyms and antonyms based on the thesaurus provided by wordAPI or their own custom thesaurus based on the radio buttons. Custom thesaurus function not implemented. Standard thesaurus lookup function is functional. Simply input a word in the textbox, select from Standard or Custom Thesaurus to look up from and select Synonym or Antonym from the dropdown list and press search.'
+									'The Use Thesaurus tab allows the user to find synonyms and antonyms based on the thesaurus provided by wordAPI or their own custom thesaurus based on the radio buttons. Simply input a word in the textbox, select from Standard or Custom Thesaurus to look up from and select Synonym or Antonym from the dropdown list and press search.'
 								),
 								React.createElement(
 									'p',
 									null,
 									'The user may also press on one of the result and the content of the search box will be replaced by the result that the user clicked on.'
+								),
+								React.createElement(
+									'p',
+									null,
+									'To change password, click your username at the top left corner of the page after logging in.'
 								),
 								React.createElement(
 									'p',
@@ -364,17 +397,8 @@ class BaseFunction extends React.Component {
 		this.handleRgClick = this.handleRgClick.bind(this);
 		this.handleCClick = this.handleCClick.bind(this);
 		this.logout = props.logout.bind(this);
+		this.changePassword = this.changePassword.bind(this);
 	}
-	// logout() {
-	// 	this.setState({ job: 3 });
-	// 	var NAME = document.getElementById("home");
-	// 	NAME.className="active";
-	// 	var CUS = document.getElementById("cus");
-	// 	CUS.classList.remove("active");
-	// 	var THES = document.getElementById("thes");
-	// 	THES.classList.remove("active");
-	// 	console.log('Home');
-	// }
 	handleHClick() {
 		this.setState({ job: 0 });
 		var NAME = document.getElementById("home");
@@ -405,7 +429,47 @@ class BaseFunction extends React.Component {
 		THES.classList.remove("active");
 		//console.log('Cust');
 	}
-
+	changePassword() {
+		console.log(document.getElementById("newpass").value);
+		if (document.getElementById("newpass").value === document.getElementById("newpassconf").value) {
+			//console.log(document.getElementById("newpassconf").value);
+			$.ajax({
+				url: 'http://localhost:3000/changepassword',
+				type: "PUT",
+				async: false,
+				data: { password: document.getElementById("newpass").value },
+				success: function (data) {
+					console.log(data);
+					alert("Password updated successfully!");
+				},
+				error: function (xhr, ajaxOptions, thrownError) {
+					alert("Failed to change password!");
+					alert(xhr.status);
+					alert(thrownError);
+				}
+			});
+		} else {
+			alert("Passwords don't match!");
+		}
+	}
+	componentDidMount() {
+		var result = '';
+		$.ajax({
+			url: 'http://localhost:3000/welcome',
+			type: "GET",
+			async: false,
+			success: function (data) {
+				console.log(data);
+				result = data;
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				alert(xhr.status);
+				alert(thrownError);
+			}
+		});
+		console.log(result);
+		document.getElementById("username").innerHTML = "TSM Custom Thesaurus <br/> Logged in as: " + result;
+	}
 	render() {
 		const job = this.state.job;
 		let page = null;
@@ -437,7 +501,11 @@ class BaseFunction extends React.Component {
 							React.createElement(
 								'h3',
 								{ className: 'masthead-brand' },
-								'TSM Custom Thesaurus'
+								React.createElement(
+									'a',
+									{ href: '#', id: 'username', 'data-toggle': 'modal', 'data-target': '#passChange' },
+									'TSM Custom Thesaurus'
+								)
 							),
 							React.createElement(
 								'nav',
@@ -491,18 +559,64 @@ class BaseFunction extends React.Component {
 						page
 					)
 				)
+			),
+			React.createElement(
+				'div',
+				{ className: 'modal fade', id: 'passChange', role: 'dialog' },
+				React.createElement(
+					'div',
+					{ className: 'modal-dialog' },
+					React.createElement(
+						'div',
+						{ className: 'modal-content', id: 'passChangein' },
+						React.createElement(
+							'script',
+							null,
+							'document.getElementById("passChangein").style = \'background: #333;\''
+						),
+						React.createElement(
+							'div',
+							{ className: 'modal-header' },
+							React.createElement(
+								'button',
+								{ type: 'button', className: 'close', 'data-dismiss': 'modal' },
+								'\xD7'
+							),
+							React.createElement(
+								'h4',
+								{ className: 'modal-title' },
+								'Change Password'
+							)
+						),
+						React.createElement(
+							'div',
+							{ className: 'modal-body' },
+							React.createElement(
+								'form',
+								{ className: 'form-signin', onSubmit: this.changePassword },
+								React.createElement(
+									'h2',
+									{ className: 'form-signin-heading' },
+									'Type new password here'
+								),
+								React.createElement('input', { type: 'password', id: 'newpass', className: 'form-control', name: 'newpassword', placeholder: 'New Password', required: '', autoFocus: '' }),
+								React.createElement('input', { type: 'password', id: 'newpassconf', className: 'form-control', name: 'confirmpassword', placeholder: 'Confirm New Password', required: '' }),
+								React.createElement('input', { className: 'btn btn-lg btn-primary btn-block', type: 'button', onClick: this.changePassword, value: 'Submit' })
+							)
+						),
+						React.createElement(
+							'div',
+							{ className: 'modal-footer' },
+							React.createElement(
+								'button',
+								{ type: 'button', className: 'btn btn-default', 'data-dismiss': 'modal' },
+								'Close'
+							)
+						)
+					)
+				)
 			)
-		)
-		//<div>
-		//	{page}
-		// 	<button type class="btn btn-primary" onClick={this.handleCClick} >
-		//  		Edit Custom Thesaurus.
-		//	</button>
-		//	<button type class="btn btn-primary" onClick={this.handleRgClick} >
-		// 		Use Thesaurus.
-		//	</button>
-		//</div>
-		;
+		);
 	}
 
 }
@@ -620,14 +734,11 @@ class MainPage extends React.Component {
 				"password": this.state.f2
 			},
 			success: function (data) {
-				//this.loginsucc;
 				console.log(data);
 				result = "true";
-				console.log(result);
-				//render();
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
-				//alert(body);
+				alert("Login Failed.");
 				alert(xhr.status);
 				alert(thrownError);
 			}
@@ -646,21 +757,11 @@ class MainPage extends React.Component {
 		$.ajax({
 			url: 'http://localhost:3000/register',
 			type: "POST",
+			async: false,
 			data: {
 				"username": this.state.f1,
 				"password": this.state.f2
 			},
-			// headers: {
-			// 	'Access-Control-Allow-Origin': '*',
-			// 	'Access-Control-Allow-Credentials': 'true',
-			// 	'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
-			// 	'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
-			// // 	'accept': 'application/json',
-			// // 	'accept-encoding': 'gzip, deflate',
-			// // 	'accept-language': 'en-US,en;q=0.8',
-			//  	'content-type': 'application/jsonp',
-			// // 	'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
-			// },
 			success: function (data) {
 				console.log(data);
 				alert("Register Success!");
@@ -675,20 +776,13 @@ class MainPage extends React.Component {
 			}
 		});
 		console.log(this.state.f1, this.state.f2);
-		//console.log(this.state.f1, this.state.f2);
 	}
 	logout() {
 		this.setState({ login: false });
 		$.ajax({
 			url: 'http://localhost:3000/logout',
 			type: "POST",
-			// headers: {
-			// 	'accept': 'application/json',
-			// 	'accept-encoding': 'gzip, deflate',
-			// 	'accept-language': 'en-US,en;q=0.8',
-			// 	'content-type': 'application/json',
-			// 	'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
-			// },
+			async: false,
 			success: function (data) {
 				console.log(data);
 				window.location.reload();
