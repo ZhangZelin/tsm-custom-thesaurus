@@ -10,7 +10,7 @@ const cookieParser = require('cookie-parser');
 const app = express();
 var bodyParser = require('body-parser');
 
-mongoose.connect('mongodb://localhost/thesaurusdb', (error) => {
+mongoose.connect('mongodb://testuser:123@ds131329.mlab.com:31329/heroku_47wnncn2', (error) => {
   if (error) console.log(error);
   useMongoClient: true
   console.log('Database connection successful');
