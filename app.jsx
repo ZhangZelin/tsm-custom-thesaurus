@@ -79,6 +79,8 @@ class BaseThesaurus extends React.Component {
 				success: function (data) {
 					console.log(data);
 					if (data.definiton == null) {
+						console.log("null data");
+						
 						$.ajax({
 							url: url,
 							type: "GET",
@@ -87,11 +89,11 @@ class BaseThesaurus extends React.Component {
 								"X-Mashape-Key": "eWPyp4Sb8PmshOFdZAJKFbiI20NOp1oLR32jsnYjBkLwt5qmJg",
 								"X-Mashape-Host": "wordsapiv1.p.mashape.com"
 							},
-							success: function (data) {
+							success: function (data2) {
 								if (TYPE == "synonyms") {
-									var arrayLength = data.synonyms.length;
+									var arrayLength = data2.synonyms.length;
 								} else {
-									var arrayLength = data.antonyms.length;
+									var arrayLength = data2.antonyms.length;
 								}
 								if (arrayLength == 0) {
 									REG.append("There are no results for this search");
@@ -100,11 +102,11 @@ class BaseThesaurus extends React.Component {
 									var li = document.createElement("li");
 									var lia = document.createElement("a");
 									if (TYPE == "synonyms") {
-										lia.appendChild(document.createTextNode(data.synonyms[i]));
-										lia.value = data.synonyms[i];
+										lia.appendChild(document.createTextNode(data2.synonyms[i]));
+										lia.value = data2.synonyms[i];
 									} else {
-										lia.appendChild(document.createTextNode(data.antonyms[i]));
-										lia.value = data.antonyms[i];
+										lia.appendChild(document.createTextNode(data2.antonyms[i]));
+										lia.value = data2.antonyms[i];
 									}
 									lia.setAttribute("href", "#"); // added line
 									lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
@@ -289,6 +291,7 @@ class AddCThesaurus extends React.Component {
 			if (EXIST == true) {
 				alert("Definition already exists!")
 			} else {
+				console.log(newDefinition.concat([this.state.value2]));
 				$.ajax({
 					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 					type: "PUT",
@@ -324,6 +327,9 @@ class AddCThesaurus extends React.Component {
 			else if (EXIST == false) {
 				alert("Definition doesn't exist!")
 			} else {
+				console.log("else lmao");
+				console.log(newDefinition.indexOf(this.state.value2));
+				console.log(newDefinition.splice(newDefinition.indexOf(this.state.value2), 1));
 				$.ajax({
 					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 					type: "PUT",
