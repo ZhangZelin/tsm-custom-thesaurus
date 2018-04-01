@@ -14,13 +14,6 @@ const userSchema = new Schema({
 
 );
 
-//mongoose.connect('mongodb://localhost/thesaurusdb', (error) => {
-//  if (error) console.log(error);
-
-//  console.log('Database connection successful');
-
-//});
-
 // Doc for Mongoose Models: http://mongoosejs.com/docs/models
 
 // Use the schema to create a model

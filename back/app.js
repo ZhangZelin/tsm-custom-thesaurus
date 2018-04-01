@@ -7,7 +7,6 @@ const session = require('express-session');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const path = require('path');
-//const router = require('./index');
 const app = express();
 var bodyParser = require('body-parser');
 
@@ -31,7 +30,6 @@ app.use(function(req, res, next) {
 });
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// parse application/json
 app.use(bodyParser.json());
 
 app.use(session({secret:"supersecretsessioncodethatyoushouldnotsee",
@@ -39,7 +37,7 @@ app.use(session({secret:"supersecretsessioncodethatyoushouldnotsee",
                  saveUninitialized:true,
                 cookie: {
                     maxAge: 36000000,
-                    httpOnly: false // <- set httpOnly to false
+                    httpOnly: false
                     }
                 }
                 ));
@@ -48,8 +46,6 @@ app.get('/', (req, res) => { return res.sendFile(path.resolve(path.join(__dirnam
 
 
 app.get('/words', words.findAll);
-
-//app.get('/words/:user', words.findAll);
 
 app.get('/words/:word/:type', words.findOne);
 
@@ -76,7 +72,5 @@ app.put('/changepassword', users.update);
 app.delete('/users/:user', users.delete);
 
 var port_number = process.env.PORT || 3000;
+
 app.listen(port_number, () => console.log(`Listening on ` + port_number));
-// app.listen(3000, function(){
-//     console.log("ayy lmao");
-// })

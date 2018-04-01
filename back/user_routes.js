@@ -7,7 +7,6 @@ exports.findAll = function findUser(req, res){
 			console.log(err);
 			return res.status(500).send();
 		}
-		//console.log(newUser);
 		return res.status(200).send(allWords);
 		}
 	);
@@ -21,7 +20,6 @@ exports.login = function findUser(req, res){
 		if(!user){
 			return res.status(404).send();
 		}
-		//console.log(newUser);
 		
 		req.session.user = user;
 		req.session.save(function (err) {
@@ -39,7 +37,6 @@ exports.logout = function logOut(req, res){
 		if(!req.session.user){
 			return res.status(404).send();
 		}
-		//console.log(newUser);
 		req.session.user = null;
 		return res.status(200).send("Logged out successfully.");
 };
@@ -50,23 +47,19 @@ exports.findOne = function findWord(req, res) {
 			console.log(err);
 			return res.status(500).send();
 		}
-		//console.log(newUser);
 		return res.status(200).send(user);
 	});
 };
 
 exports.addOne = function addUser(req, res) {
-	console.log(req.body);
 	  const newUser = new User();
 	  newUser.username = req.body.username;
 	  newUser.password = req.body.password;
-	  //newUser.
 	newUser.save((err) => {
 		if(err){
 			console.log(err);
 			return res.status(500).send();
 		}
-		console.log(newUser);
 		return res.status(200).send();
   	});
 };
@@ -82,7 +75,6 @@ exports.update = function updateUser(req, res) {
 				console.log(err);
 				return res.status(500).send();
 			}
-			//console.log(newUser);
 			return res.status(200).send();
 		});
 
@@ -90,13 +82,11 @@ exports.update = function updateUser(req, res) {
 };
 
 exports.delete = function deleteUser(req, res) {
-	console.log(req.params);
 	User.findOneAndRemove({ username: req.params.user}, (err) => {
 		if(err){
 			console.log(err);
 			return res.status(500).send();
 		}
-		//console.log(newUser);
 		return res.status(200).send();
   	});
 };

@@ -12,17 +12,12 @@ class BaseThesaurus extends React.Component {
 	}
 	handleSubmit(event) {
 		event.preventDefault();
-		//console.log("doc is " + document.getElementById('thesinput').value);
 		this.state.value = document.getElementById('thesinput').value;
 		var TYPE = document.getElementById("sel1").value.toLowerCase();
 		var url = 'https://wordsapiv1.p.mashape.com/words/' + this.state.value + '/' + TYPE;
-		//console.log("state is " + this.state.value);						
 		if (this.state.source === "sourceStandard") {
-			//alert('synonms for: ' + this.state.value + '\nFunctionality not implemented');
 			var REG = document.getElementById("returnReg");
 			REG.innerHTML = "";
-			//REG.append('<li>An element</li>');
-			//console.log(url);
 			$.ajax({
 				url: url,
 				type: "GET",
@@ -31,16 +26,9 @@ class BaseThesaurus extends React.Component {
 					"X-Mashape-Host": "wordsapiv1.p.mashape.com"
 				},
 				success: function (data) {
-					//alert("success")
-					//console.log(data)
-					//console.log(TYPE)
-					//console.log(data.antonyms)	
-					//console.log(data.antonyms.length)														
 					if (TYPE == "synonyms") {
-						//console.log("a")
 						var arrayLength = data.synonyms.length;
 					} else {
-						//console.log("b")
 						var arrayLength = data.antonyms.length;
 					}
 					if (arrayLength == 0) {
@@ -56,8 +44,8 @@ class BaseThesaurus extends React.Component {
 							lia.appendChild(document.createTextNode(data.antonyms[i]));
 							lia.value = data.antonyms[i];
 						}
-						lia.setAttribute("href", "#"); // added line
-						lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
+						lia.setAttribute("href", "#");
+						lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}");
 						li.appendChild(lia);
 						REG.appendChild(li);
 					}
@@ -70,16 +58,12 @@ class BaseThesaurus extends React.Component {
 			var REG = document.getElementById("returnReg");
 			REG.innerHTML = "";
 			$.ajax({
-				//url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 				url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 
 				type: "GET",
 				async: false,
 				success: function (data) {
-					console.log(data);
 					if (data.definition == null) {
-						console.log("null data");
-
 						$.ajax({
 							url: url,
 							type: "GET",
@@ -107,8 +91,8 @@ class BaseThesaurus extends React.Component {
 										lia.appendChild(document.createTextNode(data2.antonyms[i]));
 										lia.value = data2.antonyms[i];
 									}
-									lia.setAttribute("href", "#"); // added line
-									lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
+									lia.setAttribute("href", "#");
+									lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}");
 									li.appendChild(lia);
 									REG.appendChild(li);
 								}
@@ -127,17 +111,15 @@ class BaseThesaurus extends React.Component {
 							var lia = document.createElement("a");
 							lia.appendChild(document.createTextNode(data.definition[i]));
 							lia.value = data.definition[i];
-							lia.setAttribute("href", "#"); // added line
-							lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
+							lia.setAttribute("href", "#");
+							lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}");
 							li.appendChild(lia);
 							REG.appendChild(li);
 						}
 					}
-					console.log(data);
 				},
 				error: function (xhr, ajaxOptions, thrownError) {}
 			});
-			//alert(TYPE + ' for: ' + this.state.value + ' from custom thesaurus\n Functionality not implemented');
 		}
 	}
 	handleSourceChange(event) {
@@ -239,7 +221,6 @@ class AddCThesaurus extends React.Component {
 			type: "GET",
 			async: false,
 			success: function (data) {
-				console.log(data);
 				if (data.definition == null) {
 					$.ajax({
 						url: url,
@@ -255,12 +236,6 @@ class AddCThesaurus extends React.Component {
 							} else {
 								var arrayLength = data.antonyms.length;
 							}
-							// if (TYPE == "synonyms") {
-							// 		newDefinition = data.synonyms;
-							// }
-							// else {
-							// 		newDefinition = data.antonyms;
-							// }
 							for (var i = 0; i < arrayLength; i++) {
 								if (TYPE == "synonyms") {
 									newDefinition[i] = data.synonyms[i];
@@ -268,9 +243,7 @@ class AddCThesaurus extends React.Component {
 									newDefinition[i] = data.antonyms[i];
 								}
 							}
-							console.log(newDefinition);
 							wordvar = data.word;
-							console.log(wordvar);
 						}, error: function (xhr, ajaxOptions, thrownError) {
 							alert(xhr.status);
 							alert(thrownError);
@@ -287,8 +260,7 @@ class AddCThesaurus extends React.Component {
 							"definition": newDefinition
 						},
 						success: function (data) {
-							console.log(data);
-							console.log("added new entry");
+							console.log("Added new entry");
 						},
 						error: function (xhr, ajaxOptions, thrownError) {
 							alert(xhr.status);
@@ -316,11 +288,6 @@ class AddCThesaurus extends React.Component {
 			if (EXIST == true) {
 				alert("Definition already exists!");
 			} else {
-
-				console.log(newDefinition);
-				console.log("{'definition:' " + newDefinition + "}");
-				//var obj = JSON.parse("{definition: " + newDefinition +"}");
-				//console.log(obj);
 				$.ajax({
 					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 					type: "PUT",
@@ -328,7 +295,7 @@ class AddCThesaurus extends React.Component {
 					headers: { contentType: "application/json" },
 					data: { "definition": newDefinition.concat([this.state.value2]) },
 					success: function (data) {
-						console.log(data);
+						alert("Successfully added " + this.state.value2 + " to custom thesaurus.");
 					},
 					error: function (xhr, ajaxOptions, thrownError) {
 						alert(xhr.status);
@@ -344,7 +311,7 @@ class AddCThesaurus extends React.Component {
 					type: "DELETE",
 					async: false,
 					success: function (data) {
-						console.log("Delete success!");
+						alert("Delete success!");
 					},
 					error: function (xhr, ajaxOptions, thrownError) {
 						alert(xhr.status);
@@ -354,8 +321,6 @@ class AddCThesaurus extends React.Component {
 			} else if (EXIST == false) {
 				alert("Definition doesn't exist!");
 			} else {
-				console.log("else lmao");
-				console.log(newDefinition.indexOf(this.state.value2));
 				newDefinition.splice(newDefinition.indexOf(this.state.value2), 1);
 				$.ajax({
 					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
@@ -365,7 +330,7 @@ class AddCThesaurus extends React.Component {
 						"definition": newDefinition
 					},
 					success: function (data) {
-						console.log(data);
+						alert("Successfully removed " + this.state.value2 + " from custom thesaurus.");
 					},
 					error: function (xhr, ajaxOptions, thrownError) {
 						alert(xhr.status);
@@ -374,11 +339,8 @@ class AddCThesaurus extends React.Component {
 				});
 			}
 		}
-		alert(ACTION + ': ' + this.state.value2 + '\n' + TYPE + ' of: ' + this.state.value + '\nFunctionality not implemented');
 	}
 	render() {
-		//var TYPE = document.getElementById("sel2").value;		
-		//var ACTION = document.getElementById("sel3").value;		
 		return React.createElement(
 			'div',
 			{ className: 'bt' },
@@ -591,7 +553,6 @@ class BaseFunction extends React.Component {
 		CUS.classList.remove("active");
 		var THES = document.getElementById("thes");
 		THES.classList.remove("active");
-		//console.log('Home');
 	}
 	handleRgClick() {
 		this.setState({ job: 1 });
@@ -601,7 +562,6 @@ class BaseFunction extends React.Component {
 		HOME.classList.remove("active");
 		var CUS = document.getElementById("cus");
 		CUS.classList.remove("active");
-		//console.log('Reg');
 	}
 	handleCClick() {
 		this.setState({ job: 2 });
@@ -611,19 +571,15 @@ class BaseFunction extends React.Component {
 		HOME.classList.remove("active");
 		var THES = document.getElementById("thes");
 		THES.classList.remove("active");
-		//console.log('Cust');
 	}
 	changePassword() {
-		console.log(document.getElementById("newpass").value);
 		if (document.getElementById("newpass").value === document.getElementById("newpassconf").value) {
-			//console.log(document.getElementById("newpassconf").value);
 			$.ajax({
 				url: 'https://tsm-custom-thesaurus.herokuapp.com/changepassword',
 				type: "PUT",
 				async: false,
 				data: { password: document.getElementById("newpass").value },
 				success: function (data) {
-					console.log(data);
 					alert("Password updated successfully!");
 				},
 				error: function (xhr, ajaxOptions, thrownError) {
@@ -643,7 +599,6 @@ class BaseFunction extends React.Component {
 			type: "GET",
 			async: false,
 			success: function (data) {
-				console.log(data);
 				result = data;
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
@@ -651,7 +606,6 @@ class BaseFunction extends React.Component {
 				alert(thrownError);
 			}
 		});
-		console.log(result);
 		document.getElementById("username").innerHTML = "TSM Custom Thesaurus <br/> Logged in as: " + result;
 	}
 	render() {
@@ -664,7 +618,6 @@ class BaseFunction extends React.Component {
 		} else if (job == 2) {
 			page = React.createElement(AddCThesaurus, null);
 		} else {
-			//log out function here
 			page = React.createElement(Login, null);
 		}
 		return React.createElement(
@@ -918,7 +871,6 @@ class MainPage extends React.Component {
 				"password": this.state.f2
 			},
 			success: function (data) {
-				console.log(data);
 				result = "true";
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
@@ -927,14 +879,12 @@ class MainPage extends React.Component {
 				alert(thrownError);
 			}
 		});
-		console.log(this.state.f1, this.state.f2);
 		if (result == "true") {
 			this.setState({ login: true });
 		}
 	}
 	register() {
 		this.setState({ register: true });
-		console.log(this.state.f1, this.state.f2);
 	}
 	registerfinish() {
 		this.setState({ register: false });
@@ -947,19 +897,15 @@ class MainPage extends React.Component {
 				"password": this.state.f2
 			},
 			success: function (data) {
-				console.log(data);
 				alert("Register Success!");
 				window.location.reload();
-				//this.setState({ login: true });
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
-				//alert(body);
 				alert("Register Failed!");
 				alert(xhr.status);
 				alert(thrownError);
 			}
 		});
-		console.log(this.state.f1, this.state.f2);
 	}
 	logout() {
 		this.setState({ login: false });
@@ -968,7 +914,6 @@ class MainPage extends React.Component {
 			type: "POST",
 			async: false,
 			success: function (data) {
-				console.log(data);
 				window.location.reload();
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
@@ -976,7 +921,6 @@ class MainPage extends React.Component {
 				alert(thrownError);
 			}
 		});
-		//console.log('logout');
 	}
 	getf1() {
 		return this.state.f1;
@@ -1000,9 +944,6 @@ class MainPage extends React.Component {
 		);
 	}
 }
-// This asks ReactDOM to add the component SimpleWidget
-// Note the JSX for specifiying a React component
 
 ReactDOM.render(React.createElement(MainPage, null), document.getElementById('root'));
-//ReactDOM.render(<Bottom />, document.getElementById('bottom'));
 
