@@ -264,7 +264,7 @@ class AddCThesaurus extends React.Component {
 						data: {
 							"word": wordvar,
 							"type": TYPE,
-							"definition": ["a","b","c"]
+							"definition": newDefinition
 						},
 						success: function (data) {
 							console.log(data);
@@ -301,20 +301,20 @@ class AddCThesaurus extends React.Component {
 				console.log("{'definition:' " + newDefinition +"}");
 				//var obj = JSON.parse("{definition: " + newDefinition +"}");
 				//console.log(obj);
-				// $.ajax({
-				// 	url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
-				// 	type: "PUT",
-				// 	async: false,
-				// 	contentType: "application/json",
-				// 	data: {"definition": newDefinition},
-				// 	success: function (data) {
-				// 		console.log(data);
-				// 	}
-				// 	, error: function (xhr, ajaxOptions, thrownError) {
-				// 		alert(xhr.status);
-				// 		alert(thrownError);
-				// 	}
-				// });
+				$.ajax({
+					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
+					type: "PUT",
+					async: false,
+					headers: {contentType: "application/json"},
+					data: {"definition": newDefinition},
+					success: function (data) {
+						console.log(data);
+					}
+					, error: function (xhr, ajaxOptions, thrownError) {
+						alert(xhr.status);
+						alert(thrownError);
+					}
+				});
 			}
 		}
 		if (ACTION == "Remove") {
