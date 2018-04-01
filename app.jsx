@@ -248,15 +248,17 @@ class AddCThesaurus extends React.Component {
 							console.log(newDefinition);
 							var wordvar = data.word;
 							console.log(wordvar);
+							var obj = {
+								"word": data.word,
+								"type": TYPE,
+								"definition": newDefinition
+							};
+							var myJSON = JSON.stringify(obj);
 							$.ajax({
 								url: 'https://tsm-custom-thesaurus.herokuapp.com/words',
 								type: "POST",
 								async: false,
-								data: {
-									"word": data.word,
-									"type": TYPE,
-									"definition": newDefinition
-								},
+								data: myJSON,
 								success: function (data) {
 									console.log(data);
 									
