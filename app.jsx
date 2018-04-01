@@ -208,7 +208,7 @@ class AddCThesaurus extends React.Component {
 		event.preventDefault();
 		var TYPE = document.getElementById("sel2").value.toLowerCase();
 		var ACTION = document.getElementById("sel3").value;
-		var newDefinition = [String];
+		var newDefinition = new Array();
 		var url = 'https://wordsapiv1.p.mashape.com/words/' + this.state.value + '/' + TYPE;
 
 		$.ajax({
@@ -232,19 +232,19 @@ class AddCThesaurus extends React.Component {
 							} else {
 								var arrayLength = data.antonyms.length;
 							}
-							if (TYPE == "synonyms") {
-									newDefinition = data.synonyms;
-							}
-							else {
-									newDefinition = data.antonyms;
-							}
-							// for (var i = 0; i < arrayLength; i++) {
-							// 	if (TYPE == "synonyms") {
-							// 		newDefinition.concat([data.synonyms[i]]);
-							// 	} else {
-							// 		newDefinition.concat([data.antonyms[i]]);
-							// 	}
+							// if (TYPE == "synonyms") {
+							// 		newDefinition = data.synonyms;
 							// }
+							// else {
+							// 		newDefinition = data.antonyms;
+							// }
+							for (var i = 0; i < arrayLength; i++) {
+								if (TYPE == "synonyms") {
+									newDefinition[i] = data.synonyms[i];
+								} else {
+									newDefinition[i] = data.antonyms[i];
+								}
+							}
 							console.log(newDefinition);
 							var wordvar = data.word;
 							console.log(wordvar);
@@ -258,6 +258,8 @@ class AddCThesaurus extends React.Component {
 									"definition": newDefinition
 								},
 								success: function (data) {
+									console.log(data);
+									
 									console.log("added new entry");
 								}
 								, error: function (xhr, ajaxOptions, thrownError) {
@@ -294,8 +296,8 @@ class AddCThesaurus extends React.Component {
 				newDefinition.concat([this.state.value2]);
 				console.log(newDefinition);
 				console.log("{'definition:' " + newDefinition +"}");
-				var obj = JSON.parse("{definition: " + newDefinition +"}");
-				console.log(obj);
+				//var obj = JSON.parse("{definition: " + newDefinition +"}");
+				//console.log(obj);
 				// $.ajax({
 				// 	url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 				// 	type: "PUT",
