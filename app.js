@@ -315,7 +315,7 @@ class AddCThesaurus extends React.Component {
 				newDefinition.concat([this.state.value2]);
 				console.log(newDefinition);
 				console.log("{'definition:' " + newDefinition + "}");
-				var obj = JSON.parse("{definition: " + newDefinition + "}");
+				//var obj = JSON.parse("{definition: " + newDefinition +"}");
 				console.log(obj);
 				// $.ajax({
 				// 	url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
