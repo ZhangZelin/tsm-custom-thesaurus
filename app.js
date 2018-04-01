@@ -312,13 +312,13 @@ class AddCThesaurus extends React.Component {
 			if (EXIST == true) {
 				alert("Definition already exists!");
 			} else {
-				console.log(newDefinition.concat([this.state.value2]));
+				newDefinition.concat([this.state.value2]);
 				$.ajax({
 					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 					type: "PUT",
 					async: false,
 					data: {
-						"definition": newDefinition.concat([this.state.value2])
+						"definition": newDefinition
 					},
 					success: function (data) {
 						console.log(data);
@@ -349,13 +349,13 @@ class AddCThesaurus extends React.Component {
 			} else {
 				console.log("else lmao");
 				console.log(newDefinition.indexOf(this.state.value2));
-				console.log(newDefinition.splice(newDefinition.indexOf(this.state.value2), 1));
+				newDefinition.splice(newDefinition.indexOf(this.state.value2), 1);
 				$.ajax({
 					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 					type: "PUT",
 					async: false,
 					data: {
-						"definition": newDefinition.splice(newDefinition.indexOf(this.state.value2), 1)
+						"definition": newDefinition
 					},
 					success: function (data) {
 						console.log(data);
