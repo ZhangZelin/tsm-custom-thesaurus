@@ -6,6 +6,7 @@ const User = require('./user_model');
 const session = require('express-session');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 //const router = require('./index');
 const app = express();
 var bodyParser = require('body-parser');
@@ -42,7 +43,7 @@ app.use(session({secret:"supersecretsessioncodethatyoushouldnotsee",
                     }
                 }
                 ));
-//app.get('/', (req, res) => { res.render('/home/hx/CSC309/assignment-3-tsm/index.html')});
+app.get('/', (req, res) => { return res.sendFile(path.resolve(path.join(__dirname,'/../index.html')))});
 app.use(express.static('./'));
 
 app.get('/words', words.findAll);
