@@ -4,15 +4,13 @@ const express = require('express');
 //const router = express.Router();
 
 exports.findAll = function findWord(req, res){
-	let query = {};
 	//if(req.params.user){
 	//	query.owner = req.params.user;
 	//}
 	if(!req.session.user){
 		return res.status(401).send("Not logged in!");
 	}
-	query.owner = req.session.user.username;
-	console.log(query);
+	console.log({owner: req.session.user.username});
 	Thesaurus.find(query, (err, allWords) =>{
 		if(err){
 			console.log(err);
@@ -30,12 +28,11 @@ exports.findOne = function findWord(req, res) {
 	if(!req.session.user){
 		return res.status(401).send("Not logged in!");
 	}
-  	let query = {
-  		word: req.params.word,
-		  owner: req.session.user.username,
-		  type: req.params.type
-  	};
-	Thesaurus.findOne(query, (err, word) => {
+	Thesaurus.findOne({
+		word: req.params.word,
+		owner: req.session.user.username,
+		type: req.params.type
+	}, (err, word) => {
 		if(err){
 			console.log(err);
 			return res.status(500).send();
@@ -72,12 +69,11 @@ exports.update = function updateWord(req, res) {
 	if(!req.session.user){
 		return res.status(401).send("Not logged in!");
 	}
-	let query = {
-  		word: req.params.word,
-		  owner: req.session.user.username,
-		  type: req.params.type
-  	};
-	Thesaurus.findOne(query, (err, word) => {
+	Thesaurus.findOne({
+		word: req.params.word,
+		owner: req.session.user.username,
+		type: req.params.type
+	}, (err, word) => {
 		word.definition = req.body.definition;
 		word.save((err2) => {
 			if(err){
@@ -95,11 +91,10 @@ exports.delete = function deleteWord(req, res) {
 	if(!req.session.user){
 		return res.status(401).send("Not logged in!");
 	}
-	let query = {
+	Thesaurus.remove({
 		owner: req.session.user.username,
   		word: req.params.word
-  	};
-	Thesaurus.remove(query,(err) =>{
+  	},(err) =>{
 		if(err){
 			console.log(err);
 			return res.status(500).send();

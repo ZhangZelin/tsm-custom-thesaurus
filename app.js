@@ -534,7 +534,7 @@ class Login extends React.Component {
 				),
 				React.createElement('input', { type: 'text', className: 'form-control', name: 'username', placeholder: 'Email Address', required: '', autoFocus: '', value: this.getf1(), onChange: this.handleChange }),
 				React.createElement('input', { type: 'password', className: 'form-control', name: 'password', placeholder: 'Password', required: '', value: this.getf2(), onChange: this.handleChange2 }),
-				React.createElement('input', { className: 'btn btn-lg btn-primary btn-block', type: 'submit', value: 'Submit' }),
+				React.createElement('input', { className: 'btn btn-lg btn-primary btn-block', type: 'button', onClick: this.login, value: 'Submit' }),
 				React.createElement(
 					'a',
 					{ onClick: this.register, className: 'btn btn-default' },
@@ -549,13 +549,23 @@ class Login extends React.Component {
 class Register extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { register: false, f2: props.f2 };
+		this.state = { register: false, f1: '', f2: '' };
 
 		this.registerfinish = props.registerfinish.bind(this);
-		this.handleChange = props.change1.bind(this);
-		this.handleChange2 = props.change2.bind(this);
-		this.getf1 = props.f1.bind(this);
-		this.getf2 = props.f2.bind(this);
+		this.handleChange = this.handleChange.bind(this);
+		this.handleChange2 = this.handleChange2.bind(this);
+	}
+	handleChange(event) {
+		this.setState({ f1: event.target.value });
+	}
+	handleChange2(event) {
+		this.setState({ f2: event.target.value });
+	}
+	getf1() {
+		return this.state.f1;
+	}
+	getf2() {
+		return this.state.f2;
 	}
 	render() {
 		return React.createElement(
@@ -571,7 +581,7 @@ class Register extends React.Component {
 				),
 				React.createElement('input', { type: 'text', className: 'form-control', name: 'username', placeholder: 'Email Address', required: '', autoFocus: '', value: this.getf1(), onChange: this.handleChange }),
 				React.createElement('input', { type: 'password', className: 'form-control', name: 'password', placeholder: 'Password', required: '', value: this.getf2(), onChange: this.handleChange2 }),
-				React.createElement('input', { className: 'btn btn-lg btn-primary btn-block', type: 'submit', value: 'Submit' })
+				React.createElement('input', { className: 'btn btn-lg btn-primary btn-block', type: 'button', onClick: this.registerfinish, value: 'Submit' })
 			)
 		);
 	}
@@ -587,6 +597,8 @@ class MainPage extends React.Component {
 		this.register = this.register.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.handleChange2 = this.handleChange2.bind(this);
+		this.loginsucc = this.loginsucc.bind(this);
+		this.render = this.render.bind(this);
 	}
 	handleChange(event) {
 		this.setState({ f1: event.target.value });
@@ -594,9 +606,36 @@ class MainPage extends React.Component {
 	handleChange2(event) {
 		this.setState({ f2: event.target.value });
 	}
-	login() {
+	loginsucc() {
 		this.setState({ login: true });
+	}
+	login() {
+		var result = "";
+		$.ajax({
+			url: 'http://localhost:3000/login',
+			type: "POST",
+			async: false,
+			data: {
+				"username": this.state.f1,
+				"password": this.state.f2
+			},
+			success: function (data) {
+				//this.loginsucc;
+				console.log(data);
+				result = "true";
+				console.log(result);
+				//render();
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				//alert(body);
+				alert(xhr.status);
+				alert(thrownError);
+			}
+		});
 		console.log(this.state.f1, this.state.f2);
+		if (result == "true") {
+			this.setState({ login: true });
+		}
 	}
 	register() {
 		this.setState({ register: true });
@@ -604,12 +643,62 @@ class MainPage extends React.Component {
 	}
 	registerfinish() {
 		this.setState({ register: false });
+		$.ajax({
+			url: 'http://localhost:3000/register',
+			type: "POST",
+			data: {
+				"username": this.state.f1,
+				"password": this.state.f2
+			},
+			// headers: {
+			// 	'Access-Control-Allow-Origin': '*',
+			// 	'Access-Control-Allow-Credentials': 'true',
+			// 	'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
+			// 	'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
+			// // 	'accept': 'application/json',
+			// // 	'accept-encoding': 'gzip, deflate',
+			// // 	'accept-language': 'en-US,en;q=0.8',
+			//  	'content-type': 'application/jsonp',
+			// // 	'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
+			// },
+			success: function (data) {
+				console.log(data);
+				alert("Register Success!");
+				window.location.reload();
+				//this.setState({ login: true });
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				//alert(body);
+				alert("Register Failed!");
+				alert(xhr.status);
+				alert(thrownError);
+			}
+		});
+		console.log(this.state.f1, this.state.f2);
 		//console.log(this.state.f1, this.state.f2);
 	}
 	logout() {
 		this.setState({ login: false });
+		$.ajax({
+			url: 'http://localhost:3000/logout',
+			type: "POST",
+			// headers: {
+			// 	'accept': 'application/json',
+			// 	'accept-encoding': 'gzip, deflate',
+			// 	'accept-language': 'en-US,en;q=0.8',
+			// 	'content-type': 'application/json',
+			// 	'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
+			// },
+			success: function (data) {
+				console.log(data);
+				window.location.reload();
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				alert(xhr.status);
+				alert(thrownError);
+			}
+		});
 		//console.log('logout');
-		window.location.reload();
 	}
 	getf1() {
 		return this.state.f1;

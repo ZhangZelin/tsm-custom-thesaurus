@@ -13,7 +13,6 @@ exports.findAll = function findUser(req, res){
 	);
 };
 exports.login = function findUser(req, res){
-
 	User.findOne({username : req.body.username, password : req.body.password}, (err, user) =>{
 		if(err){
 			console.log(err);
@@ -23,7 +22,14 @@ exports.login = function findUser(req, res){
 			return res.status(404).send();
 		}
 		//console.log(newUser);
+		
 		req.session.user = user;
+		req.session.save(function (err) {
+			if(err){
+				console.log(err);
+				return res.status(500).send();
+			}
+		});
 		return res.status(200).send(user);
 	});
 };
