@@ -73,16 +73,18 @@ exports.update = function updateWord(req, res) {
 		word: req.params.word,
 		owner: req.session.user.username,
 		type: req.params.type
-	}, (err, word) => {
+	}, (err, newWord) => {
 		console.log(req.body.definition);
-		word.definition = req.body.definition;
-		word.save((err2) => {
+		console.log(req.body);
+		console.log(req.params);
+		newWord.definition = req.body.definition;
+		newWord.save((err2) => {
 			if(err){
 				console.log(err);
 				return res.status(500).send();
 			}
 			//console.log(newWord);
-			return res.status(200).send(word);
+			return res.status(200).send(newWord);
 		});
 
 	});
