@@ -284,7 +284,7 @@ class AddCThesaurus extends React.Component {
 						data: {
 							"word": wordvar,
 							"type": TYPE,
-							"definition": ["a", "b", "c"]
+							"definition": newDefinition
 						},
 						success: function (data) {
 							console.log(data);
