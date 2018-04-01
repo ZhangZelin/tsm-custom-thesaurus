@@ -11,7 +11,7 @@ exports.findAll = function findWord(req, res){
 		return res.status(401).send("Not logged in!");
 	}
 	console.log({owner: req.session.user.username});
-	Thesaurus.find(query, (err, allWords) =>{
+	Thesaurus.find({owner: req.session.user.username}, (err, allWords) =>{
 		if(err){
 			console.log(err);
 			return res.status(500).send();
@@ -61,7 +61,7 @@ exports.addOne = function addWord(req, res) {
 			return res.status(500).send();
 		}
 		console.log(newWord);
-		return res.status(200).send();
+		return res.status(200).send(newWord);
   	});
 };
 
@@ -81,7 +81,7 @@ exports.update = function updateWord(req, res) {
 				return res.status(500).send();
 			}
 			//console.log(newWord);
-			return res.status(200).send();
+			return res.status(200).send(word);
 		});
 
 	});

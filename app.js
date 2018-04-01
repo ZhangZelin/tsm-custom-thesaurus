@@ -77,7 +77,7 @@ class BaseThesaurus extends React.Component {
 				async: false,
 				success: function (data) {
 					console.log(data);
-					if (data.definiton == null) {
+					if (data.definition == null) {
 						console.log("null data");
 
 						$.ajax({
