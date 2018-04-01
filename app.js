@@ -275,6 +275,7 @@ class AddCThesaurus extends React.Component {
 								url: 'https://tsm-custom-thesaurus.herokuapp.com/words',
 								type: "POST",
 								async: false,
+								contentType: "application/json",
 								data: {
 									"word": data.word,
 									"type": TYPE,
