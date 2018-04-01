@@ -292,13 +292,16 @@ class AddCThesaurus extends React.Component {
 				alert("Definition already exists!")
 			} else {
 				newDefinition.concat([this.state.value2]);
+				console.log(newDefinition);
+				console.log("{'definition:' " + newDefinition +"}");
+				var obj = JSON.parse("{'definition:' " + newDefinition +"}");
+				console.log(obj);
 				$.ajax({
 					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 					type: "PUT",
 					async: false,
-					data: {
-						"definition": newDefinition
-					},
+					contentType: "application/json",
+					data: "{'definition:' " + newDefinition +"}",
 					success: function (data) {
 						console.log(data);
 					}
