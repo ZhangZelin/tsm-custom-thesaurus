@@ -43,8 +43,9 @@ app.use(session({secret:"supersecretsessioncodethatyoushouldnotsee",
                     }
                 }
                 ));
-app.get('/', (req, res) => { return res.sendFile(path.resolve(path.join(__dirname,'/../index.html')))});
 app.use(express.static('./'));
+app.get('/', (req, res) => { return res.sendFile(path.resolve(path.join(__dirname,'/../index.html')))});
+
 
 app.get('/words', words.findAll);
 
@@ -74,6 +75,8 @@ app.put('/changepassword', users.update);
 
 app.delete('/users/:user', users.delete);
 
-app.listen(3000, function(){
-    console.log("ayy lmao");
-})
+var port_number = process.env.PORT || 3000;
+app.listen(port_number, () => console.log(`Listening on ` + port_number));
+// app.listen(3000, function(){
+//     console.log("ayy lmao");
+// })
