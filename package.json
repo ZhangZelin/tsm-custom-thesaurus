@@ -22,6 +22,7 @@
     "babel-preset-react": "^6.24.1"
   },
   "scripts": {
+	"start": "node back/app.js" 
     "test": "echo \"Error: no test specified\" && exit 1",
     "react": "babel app.jsx > app.js"
   },
