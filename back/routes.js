@@ -53,7 +53,7 @@ exports.addOne = function addWord(req, res) {
 	  newWord.owner = req.session.user.username;
 	  newWord.word = req.body.word;
 	  newWord.type = req.body.type;
-	  newWord.definition = req.body.definition;
+	  newWord.definition = req.body.definition[];
 	  //console.log(newWord);
 	newWord.save((err) => {
 		if(err){
@@ -74,10 +74,10 @@ exports.update = function updateWord(req, res) {
 		owner: req.session.user.username,
 		type: req.params.type
 	}, (err, newWord) => {
-		console.log(req.body.definition);
+		console.log(req.body.definition[]);
 		console.log(req.body);
 		console.log(req.params);
-		newWord.definition = req.body.definition;
+		newWord.definition = req.body.definition[];
 		newWord.save((err2) => {
 			if(err){
 				console.log(err);
