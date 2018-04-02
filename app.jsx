@@ -275,7 +275,7 @@ class AddCThesaurus extends React.Component {
 					headers: {contentType: "application/json"},
 					data: {"definition": newDefinition.concat([this.state.value2])},
 					success: function (data) {
-						alert("Successfully added " + this.state.value2 + " to custom thesaurus.");
+						alert("Successfully added to custom thesaurus.");
 					}
 					, error: function (xhr, ajaxOptions, thrownError) {
 						alert(xhr.status);
@@ -311,7 +311,7 @@ class AddCThesaurus extends React.Component {
 						"definition": newDefinition
 					},
 					success: function (data) {
-						alert("Successfully removed " + this.state.value2 + " from custom thesaurus.")
+						alert("Successfully removed from custom thesaurus.")
 					}
 					, error: function (xhr, ajaxOptions, thrownError) {
 						alert(xhr.status);
